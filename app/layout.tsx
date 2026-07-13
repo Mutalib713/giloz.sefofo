@@ -5,6 +5,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { SmoothScroll } from "@/components/motion";
 import { BrandThemeSync } from "@/components/brand/brand-theme-sync";
+import { CartSheet } from "@/components/cart/cart-sheet";
+import { CartHydrator } from "@/components/cart/cart-hydrator";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -63,11 +65,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <BrandThemeSync />
+        <CartHydrator />
         <SmoothScroll>
           <Header />
           <main id="content">{children}</main>
           <Footer />
         </SmoothScroll>
+        <CartSheet />
       </body>
     </html>
   );

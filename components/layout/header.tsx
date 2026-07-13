@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, ShoppingBag, X } from "lucide-react";
 import { Logo } from "./logo";
 import { BrandSwitcher } from "@/components/brand/brand-switcher";
 import { Button } from "@/components/ui/button";
 import { useActiveBrand } from "@/lib/hooks/use-active-brand";
+import { useMounted } from "@/lib/hooks/use-mounted";
+import { selectCount, useCart } from "@/lib/cart/store";
 import { BRANDS } from "@/lib/brands";
 import { cn } from "@/lib/cn";
 
@@ -20,6 +22,9 @@ export function Header() {
   const brand = useActiveBrand();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const cartCount = useCart(selectCount);
+  const openCart = useCart((s) => s.open);
+  const mounted = useMounted();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -65,6 +70,19 @@ export function Header() {
 
         <div className="flex items-center gap-2.5">
           <BrandSwitcher className="hidden sm:inline-flex" />
+          <button
+            type="button"
+            onClick={openCart}
+            aria-label={`Open cart${mounted && cartCount > 0 ? `, ${cartCount} items` : ""}`}
+            className="relative grid size-10 place-items-center rounded-full border border-line text-ink transition-colors hover:border-brand"
+          >
+            <ShoppingBag className="size-5" />
+            {mounted && cartCount > 0 && (
+              <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1 text-[0.65rem] font-semibold text-on-brand">
+                {cartCount}
+              </span>
+            )}
+          </button>
           <Button asChild size="sm" className="hidden md:inline-flex">
             <Link href={menuHref}>See the menu</Link>
           </Button>

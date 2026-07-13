@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Heart, Minus, MessageCircle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { useWishlist } from "@/lib/hooks/use-wishlist";
 import { itemWhatsappLink } from "@/lib/whatsapp";
 import { formatCedis } from "@/lib/format";
@@ -35,13 +36,14 @@ export function OptionPicker({ product }: { product: Product }) {
 
   const total = unitPrice * qty;
   const saved = has(product.slug);
+  const selectedOptions = product.options
+    .map((g) => ({ group: g.name, choice: selected[g.name] ?? "" }))
+    .filter((o) => o.choice);
   const waHref = itemWhatsappLink(product.brand, {
     name: product.name,
     quantity: qty,
     unitPrice,
-    options: product.options
-      .map((g) => ({ group: g.name, choice: selected[g.name] ?? "" }))
-      .filter((o) => o.choice),
+    options: selectedOptions,
   });
 
   return (
@@ -100,21 +102,35 @@ export function OptionPicker({ product }: { product: Product }) {
         <div className="tnum font-serif text-3xl">{formatCedis(total)}</div>
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <Button asChild size="lg" className="flex-1">
+      <div className="flex flex-col gap-3">
+        <div className="flex gap-3">
+          <AddToCartButton
+            product={product}
+            options={selectedOptions}
+            quantity={qty}
+            label={`Add to cart · ${formatCedis(total)}`}
+            className="flex-1"
+          />
+          <Button
+            type="button"
+            variant="secondary"
+            size="icon"
+            onClick={() => toggle(product.slug)}
+            aria-pressed={saved}
+            aria-label={saved ? "Saved to wishlist" : "Save to wishlist"}
+          >
+            <Heart className={cn("size-4", saved && "fill-brand text-brand")} />
+          </Button>
+        </div>
+        <Button asChild variant="outline" size="lg">
           <a href={waHref} target="_blank" rel="noopener noreferrer">
             <MessageCircle className="size-4" /> Order on WhatsApp
           </a>
         </Button>
-        <Button type="button" variant="secondary" size="lg" onClick={() => toggle(product.slug)} aria-pressed={saved}>
-          <Heart className={cn("size-4", saved && "fill-brand text-brand")} />
-          {saved ? "Saved" : "Save"}
-        </Button>
       </div>
 
       <p className="text-xs text-muted">
-        Cart &amp; Mobile Money checkout are coming soon — order on WhatsApp today, the way Accra
-        loves to.
+        Pay with Mobile Money or card at checkout, or send your order straight to WhatsApp.
       </p>
     </div>
   );

@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, Plus } from "lucide-react";
+import { Heart } from "lucide-react";
 import { TiltCard } from "@/components/motion";
 import { FoodImage } from "@/components/common/food-image";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { PriceTag, Rating } from "@/components/menu/product-meta";
 import { useWishlist } from "@/lib/hooks/use-wishlist";
 import { cn } from "@/lib/cn";
@@ -59,13 +60,7 @@ export function ProductCard({ product }: { product: Product }) {
           <p className="mt-1.5 line-clamp-2 text-sm text-muted">{product.description}</p>
           <div className="mt-auto flex items-center justify-between pt-4">
             <PriceTag pesewas={product.basePrice} className="text-lg font-semibold" />
-            <Link
-              href={href}
-              aria-label={`View ${product.name}`}
-              className="grid size-9 place-items-center rounded-full bg-brand text-on-brand transition-transform duration-200 hover:scale-110"
-            >
-              <Plus className="size-4" />
-            </Link>
+            <AddToCartButton product={product} variant="icon" />
           </div>
         </div>
       </article>
