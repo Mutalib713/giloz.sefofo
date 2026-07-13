@@ -7,7 +7,9 @@ import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/menu/product-card";
 import { FloatingFood, Reveal, TextReveal } from "@/components/motion";
-import { Plate } from "@/components/common/plate";
+import { FoodImage } from "@/components/common/food-image";
+import { BrandLogo } from "@/components/brand/brand-logo";
+import { BRAND_HERO } from "@/lib/mock/images";
 
 export default async function BrandHome({ params }: { params: Promise<{ brand: string }> }) {
   const { brand } = await params;
@@ -18,10 +20,16 @@ export default async function BrandHome({ params }: { params: Promise<{ brand: s
   return (
     <>
       <section className="grain relative overflow-hidden">
-        <div className="mesh absolute inset-0 animate-gradient opacity-60" aria-hidden />
+        <div className="absolute inset-0" aria-hidden>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={BRAND_HERO[brand]} alt="" className="h-full w-full object-cover opacity-20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-paper via-paper/85 to-paper/55" />
+        </div>
+        <div className="mesh absolute inset-0 animate-gradient opacity-40" aria-hidden />
         <FloatingFood />
         <Container className="relative z-10 py-24 sm:py-32">
           <Reveal>
+            <BrandLogo brand={brand} size={72} className="mb-6 border border-line" />
             <p className="label text-brand">
               {b.mood} · {b.neighbourhood}
             </p>
@@ -103,7 +111,12 @@ export default async function BrandHome({ params }: { params: Promise<{ brand: s
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-line">
-              <Plate tone={featured[0]?.imageTone ?? ["#8A5A2B", "#241610"]} className="absolute inset-0" />
+              <FoodImage
+                src={featured[0]?.image}
+                alt={featured[0]?.name ?? b.name}
+                tone={featured[0]?.imageTone ?? ["#8A5A2B", "#241610"]}
+                className="absolute inset-0"
+              />
             </div>
           </Reveal>
           <Reveal delay={0.1}>

@@ -1,6 +1,7 @@
 import type { BrandKey } from "@/lib/brands";
 import type { Category, OptionGroup, Product, Tag } from "@/lib/types";
 import { slugify } from "@/lib/format";
+import { PRODUCT_IMAGES } from "@/lib/mock/images";
 
 /* ---------------------------------------------------------------- tags */
 export const TAGS: Tag[] = [
@@ -347,6 +348,7 @@ function mk(brand: BrandKey, categoryName: string, name: string, basePrice: numb
     isFeatured: o.featured ?? false,
     ratingAvg: o.rating[0],
     ratingCount: o.rating[1],
+    image: PRODUCT_IMAGES[slug],
     imageTone: o.tone,
     options: o.options,
     pairings: o.pairings,

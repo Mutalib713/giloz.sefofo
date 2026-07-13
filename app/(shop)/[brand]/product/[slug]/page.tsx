@@ -11,7 +11,7 @@ import {
   getRelated,
 } from "@/lib/data/menu";
 import { Container } from "@/components/layout/container";
-import { Plate } from "@/components/common/plate";
+import { FoodImage } from "@/components/common/food-image";
 import { OptionPicker } from "@/components/product/option-picker";
 import { ProductCard } from "@/components/menu/product-card";
 import { PriceTag, Rating, Spice, TagBadges } from "@/components/menu/product-meta";
@@ -101,7 +101,13 @@ export default async function ProductPage({
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
         <Reveal className="lg:sticky lg:top-24 lg:self-start">
           <div className="relative overflow-hidden rounded-3xl border border-line">
-            <Plate tone={product.imageTone} className="aspect-square" />
+            <FoodImage
+              src={product.image}
+              alt={product.name}
+              tone={product.imageTone}
+              priority
+              className="aspect-square"
+            />
             <div className="absolute left-4 top-4 flex flex-col gap-2">
               {product.tags.includes("chefs-pick") && (
                 <span className="w-fit rounded-full bg-black/45 px-3 py-1 text-xs font-medium uppercase tracking-wider text-white backdrop-blur">
@@ -110,9 +116,11 @@ export default async function ProductPage({
               )}
             </div>
           </div>
-          <p className="mt-3 text-center text-xs text-muted">
-            Photography coming soon — this is a placeholder rendered from the dish's colour story.
-          </p>
+          {!product.image && (
+            <p className="mt-3 text-center text-xs text-muted">
+              Photography coming soon — this is a placeholder rendered from the dish's colour story.
+            </p>
+          )}
         </Reveal>
 
         <div>

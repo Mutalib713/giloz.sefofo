@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Heart, Plus } from "lucide-react";
 import { TiltCard } from "@/components/motion";
-import { Plate } from "@/components/common/plate";
+import { FoodImage } from "@/components/common/food-image";
 import { PriceTag, Rating } from "@/components/menu/product-meta";
 import { useWishlist } from "@/lib/hooks/use-wishlist";
 import { cn } from "@/lib/cn";
@@ -23,7 +23,9 @@ export function ProductCard({ product }: { product: Product }) {
     <TiltCard className="group h-full" intensity={6}>
       <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-colors duration-300 hover:border-brand">
         <Link href={href} className="relative block aspect-[4/3] overflow-hidden">
-          <Plate
+          <FoodImage
+            src={product.image}
+            alt={product.name}
             tone={product.imageTone}
             className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
           />

@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { Reveal, TiltCard } from "@/components/motion";
 import { Plate } from "@/components/common/plate";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { BRAND_KEYS, BRANDS, type BrandKey } from "@/lib/brands";
 
 const tones: Record<BrandKey, [string, string]> = {
@@ -35,6 +36,7 @@ export function BrandChooser() {
                         className="absolute -right-16 -top-20 size-72 rounded-full opacity-70 blur-[2px]"
                       />
                       <div className="relative">
+                        <BrandLogo brand={k} size={56} className="mb-5 border border-line" />
                         <p className="label text-brand">{b.mood}</p>
                         <h3 className="mt-3 font-serif text-4xl tracking-tight sm:text-5xl">{b.name}</h3>
                         <p className="mt-3 max-w-xs text-muted">{b.tagline}</p>

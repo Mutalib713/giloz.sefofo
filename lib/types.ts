@@ -47,7 +47,9 @@ export interface Product {
   isFeatured: boolean;
   ratingAvg: number;
   ratingCount: number;
-  /** two hex colors for the CSS "plate" placeholder until real photography lands */
+  /** real photo (from the brand's Instagram / stock); falls back to imageTone */
+  image?: string;
+  /** two hex colors for the CSS "plate" placeholder shown while/if no photo */
   imageTone: [string, string];
   options: OptionGroup[];
   /** slugs of paired products (Naturia drinks, sides) */

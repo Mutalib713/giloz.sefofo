@@ -1,6 +1,7 @@
 import { Container } from "@/components/layout/container";
 import { Reveal } from "@/components/motion";
-import { Plate } from "@/components/common/plate";
+import { FoodImage } from "@/components/common/food-image";
+import { BRAND_HERO } from "@/lib/mock/images";
 
 export function StorySplit() {
   return (
@@ -9,7 +10,12 @@ export function StorySplit() {
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-line">
-              <Plate tone={["#8A5A2B", "#241610"]} className="absolute inset-0" />
+              <FoodImage
+                src={BRAND_HERO.giloz}
+                alt="Eʋe cooking from the Volta"
+                tone={["#8A5A2B", "#241610"]}
+                className="absolute inset-0"
+              />
             </div>
           </Reveal>
           <Reveal delay={0.1}>
