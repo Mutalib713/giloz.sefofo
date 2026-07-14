@@ -31,6 +31,8 @@ export interface Order {
   paymentMethod: "paystack" | "whatsapp" | "cash";
   etaMin: number;
   etaMax: number;
+  /** manual status floor set from the admin board (demo) */
+  statusOverride?: number;
 }
 
 const KEY = "eve.orders";
@@ -55,6 +57,21 @@ export function getOrder(id: string): Order | null {
   return readAll().find((o) => o.id === id) ?? null;
 }
 
+export function listOrders(): Order[] {
+  return readAll();
+}
+
+/** Admin (demo): bump an order's status floor by one step. */
+export function advanceOrder(id: string): Order | null {
+  const order = getOrder(id);
+  if (!order) return null;
+  const current = statusIndexFor(order);
+  const next = Math.min(current + 1, ORDER_STEPS.length - 1);
+  const updated: Order = { ...order, statusOverride: next };
+  saveOrder(updated);
+  return updated;
+}
+
 export function makeOrderNumber(brand: BrandKey): string {
   const prefix = brand === "giloz" ? "GZ" : "SF";
   return `${prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -64,5 +81,6 @@ export function makeOrderNumber(brand: BrandKey): string {
 export function statusIndexFor(order: Order, now = Date.now()): number {
   const elapsedSec = (now - order.createdAt) / 1000;
   const perStep = 10; // seconds per step (demo)
-  return Math.min(Math.floor(elapsedSec / perStep), ORDER_STEPS.length - 1);
+  const derived = Math.min(Math.floor(elapsedSec / perStep), ORDER_STEPS.length - 1);
+  return Math.max(derived, order.statusOverride ?? 0);
 }

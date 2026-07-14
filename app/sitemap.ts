@@ -9,6 +9,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const entries: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
+    { url: `${base}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/faq`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
   ];
 
   for (const brand of BRAND_KEYS) {

@@ -16,8 +16,11 @@ const columns = [
   {
     title: "Explore",
     links: [
-      { label: "Home", href: "/" },
-      { label: "The full menu", href: "/giloz/menu" },
+      { label: "About us", href: "/about" },
+      { label: "FAQ", href: "/faq" },
+      { label: "Contact", href: "/contact" },
+      { label: "Wishlist", href: "/wishlist" },
+      { label: "My orders", href: "/account" },
       { label: "Naturia drinks", href: "/giloz/menu?category=drinks" },
     ],
   },

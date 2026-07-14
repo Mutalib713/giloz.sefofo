@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { Heart, Menu, ShoppingBag, X } from "lucide-react";
 import { Logo } from "./logo";
 import { BrandSwitcher } from "@/components/brand/brand-switcher";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import { cn } from "@/lib/cn";
 const NAV = [
   { label: "Giloz", href: "/giloz" },
   { label: "Sefofo", href: "/sefofo" },
+  { label: "About", href: "/about" },
 ];
 
 export function Header() {
@@ -70,6 +71,13 @@ export function Header() {
 
         <div className="flex items-center gap-2.5">
           <BrandSwitcher className="hidden sm:inline-flex" />
+          <Link
+            href="/wishlist"
+            aria-label="Wishlist"
+            className="hidden size-10 place-items-center rounded-full border border-line text-ink transition-colors hover:border-brand sm:grid"
+          >
+            <Heart className="size-5" />
+          </Link>
           <button
             type="button"
             onClick={openCart}
@@ -124,6 +132,9 @@ export function Header() {
                 { label: "Giloz Restaurant", href: "/giloz" },
                 { label: "Sefofo", href: "/sefofo" },
                 { label: "Menu", href: menuHref },
+                { label: "Wishlist", href: "/wishlist" },
+                { label: "About", href: "/about" },
+                { label: "Contact", href: "/contact" },
               ].map((n, i) => (
                 <motion.div
                   key={n.href}
