@@ -10,10 +10,55 @@
 
 ## Status
 
-🟡 **Architecture phase — awaiting approval before implementation.**
+🟢 **In development.** The app runs locally end-to-end on typed mock data — no keys needed
+(see [Run it locally](#run-it-locally)). The architecture documents in [`/docs`](./docs)
+remain the source of truth for what's being built.
 
-Per the project brief, no application code is written until the architecture below is
-reviewed and approved. Everything in [`/docs`](./docs) is the plan.
+## Run it locally
+
+The app is fully self-sufficient in development: **no API keys are required**. With an
+empty environment it serves typed mock data (menu, brands, imagery) and every page works.
+
+**Prerequisites** [Node.js](https://nodejs.org) ≥ 18.18 (22 LTS recommended — see `.nvmrc`) and git.
+
+```bash
+# 1. Clone
+git clone https://github.com/Mutalib713/giloz.sefofo.git
+cd giloz.sefofo
+
+# 2. Install dependencies (uses package-lock.json)
+npm ci
+
+# 3. Environment (optional — the app runs without it)
+cp .env.example .env.local
+
+# 4. Start the dev server
+npm run dev
+```
+
+Then open <http://localhost:3000>. Key routes to explore:
+
+| Route | What it is |
+|-------|------------|
+| `/` | Brand gateway — choose Giloz or Sefofo |
+| `/giloz` · `/sefofo` | Brand home pages |
+| `/giloz/menu` · `/sefofo/menu` | Living menus |
+| `/checkout`, `/wishlist`, `/account` | Ordering flow |
+| `/admin` | Admin dashboard |
+
+### Scripts
+
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Development server with hot reload |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | ESLint |
+| `npm run typecheck` | TypeScript (strict, no emit) |
+| `npm run format` | Prettier |
+
+To connect live services (Supabase, Paystack, Cloudinary, Google Maps, WhatsApp), fill in
+the corresponding keys in `.env.local` — see [`.env.example`](./.env.example) for the full list.
 
 ## The architecture (read in order)
 
