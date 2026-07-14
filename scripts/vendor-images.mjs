@@ -58,7 +58,6 @@ const MANIFEST = {
     "https://scontent-den2-1.cdninstagram.com/v/t51.71878-15/502086894_3072203762926957_8954379514213121343_n.jpg?stp=dst-jpg_e15_fr_p1080x1080_tt6&_nc_ht=scontent-den2-1.cdninstagram.com&_nc_cat=101&_nc_oc=Q6cZ2gFoNyCjOn9lc6aSs4icJ-9OeXBBwqmZ_xVDERX1uPK4h2nMEEnw5lZlrxbR3aIkOOg&_nc_ohc=e8GD_XVkN8gQ7kNvwE_FnVS&_nc_gid=_M-QTsB-6dxyJpGoLgq3Og&edm=ADp7STQBAAAA&ccb=7-5&oh=00_AQBc-1Guu5o8acgnp-ij_XDS9aGh2GoXrCb8cL7rFcX4gA&oe=6A5AA53E&_nc_sid=c6f216",
   "food/giloz-chicken-salad.jpg":
     "https://scontent-sjc6-1.cdninstagram.com/v/t51.71878-15/503024347_2187661938348217_2311618439783149046_n.jpg?stp=dst-jpg_e15_fr_p1080x1080_tt6&_nc_ht=scontent-sjc6-1.cdninstagram.com&_nc_cat=101&_nc_oc=Q6cZ2gF06YOsaALb-WqOfXUbbxjyA8JEGTqFr4GSNmvuC3tTp4Bo_biXRtQ4TjYBnVKDddY&_nc_ohc=Y-Hx9z8U1esQ7kNvwHW5MwF&_nc_gid=hY1-TrSzZjR3BTjFr4VJUQ&edm=ADp7STQBAAAA&ccb=7-5&oh=00_AQBajiBz1l3KPqQCZOsD2TTJlJME3ODe2ZFr4Ags1bxSeQ&oe=6A5AD410&_nc_sid=c6f216",
-  "food/giloz-garifoto.jpg": wmSearch("gari foto Ghanaian food"),
   "food/hero-giloz.jpg":
     "https://scontent-ord5-1.cdninstagram.com/v/t51.71878-15/503875811_712999631479967_6270686632988035438_n.jpg?stp=dst-jpg_e15_fr_p1080x1080_tt6&_nc_ht=scontent-ord5-1.cdninstagram.com&_nc_cat=111&_nc_oc=Q6cZ2gG1-1Goq-V9c2K4sg8VmxFFIaiwbTij29i3FCbhL73RZFO3vvVKk5Whq4tlonwjJ3k&_nc_ohc=4blUSdrUfrMQ7kNvwEeDcti&_nc_gid=O726NyZ2pg9go5TGUCENXQ&edm=ADp7STQBAAAA&ccb=7-5&oh=00_AQDL1FFebGM9mbEKZ5BYWbUHtf_pKLDxkvmXGifwZv00Bw&oe=6A5A9EFD&_nc_sid=c6f216",
 
@@ -112,11 +111,12 @@ const MANIFEST = {
   "food/sefofo-kelewele.jpg": wm("0/04", "Un_plat_d%27alloco_Fried_Plantains.JPG"),
 
   // --- packaged drinks (shared by both brands; resolved from Commons search) ---
-  "food/drinks-water.jpg": wmSearch("bottled water white background"),
+  // Malt, tamarind and garifoto intentionally keep their designed gradients:
+  // free-media search only returned mismatches (a museum jar, a meal scene),
+  // and a clean gradient beats a wrong photo. Drop real product shots in later.
+  "food/drinks-water.jpg": wmSearch("plastic water bottle drink"),
   "food/drinks-soft.jpg": wmSearch("glass of cola soft drink ice"),
   "food/drinks-pineapple-ginger.jpg": wmSearch("pineapple juice glass"),
-  "food/drinks-malt.jpg": wmSearch("Malta malt drink bottle"),
-  "food/drinks-tamarind.jpg": wmSearch("tamarind juice glass"),
   "food/drinks-beer.jpg": wmSearch("lager beer glass"),
 
   // --- restaurant venues (for the "Visit Giloz / Sefofo" cards) ---
@@ -159,7 +159,7 @@ async function get(url) {
 // Commons is a free-media dump, so a naive "first hit" often returns museum
 // artefacts, specimens or tiny icons. Reject those by title and score the rest.
 const BAD_TITLE =
-  /museum|antique|vintage|specimen|art-?[ei]fact|fossil|\bcoin\b|stamp|banknote|sculpture|excavat|archae|accession|heritage|\bjar\b|\bempty\b|bottle_?cap|label|logo|diagram|\b1[89]\d\d\b/i;
+  /museum|antique|vintage|specimen|art-?[ei]fact|fossil|\bcoin\b|stamp|banknote|sculpture|excavat|archae|accession|heritage|\bjar\b|\bvase\b|propagat|cutting|seedling|\broots?\b|reagent|apothecary|medicine|poison|\bempty\b|bottle_?cap|label|logo|diagram|\b1[89]\d\d\b/i;
 
 /**
  * Resolve a `wmsearch:<keyword>` spec to a real Commons image URL at build time.
