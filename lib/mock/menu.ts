@@ -39,21 +39,38 @@ const PROTEIN: OptionGroup = {
     { name: "Fish", priceDelta: 500 },
   ],
 };
+const SOFT_CHOICE: OptionGroup = {
+  name: "Choice",
+  choices: [
+    { name: "Coca-Cola", priceDelta: 0, isDefault: true },
+    { name: "Fanta", priceDelta: 0 },
+    { name: "Sprite", priceDelta: 0 },
+  ],
+};
+const SWALLOW_PAIR: OptionGroup = {
+  name: "Pair with",
+  choices: [
+    { name: "Akple", priceDelta: 0, isDefault: true },
+    { name: "Banku", priceDelta: 0 },
+  ],
+};
 
 /* ---------------------------------------------------------- categories */
 export const CATEGORIES: Category[] = [
   // Giloz
   cat("giloz", "Soups & Swallows", "Akple, banku, fufu and the soups that define Eʋe cooking.", 1),
   cat("giloz", "Rice & Grains", "Jollof, waakye and fried rice, done properly.", 2),
-  cat("giloz", "Grills & Proteins", "Fire-kissed tilapia, chicken and yam.", 3),
-  cat("giloz", "Small Chops", "Kelewele, khebab and things to snack on.", 4),
-  cat("giloz", "Naturia Drinks", "Natural Ghanaian drinks, brewed fresh.", 5),
+  cat("giloz", "Grills & Proteins", "Fire-kissed tilapia, chicken and attieke.", 3),
+  cat("giloz", "Home Favourites", "Boiled yam, garifoto and the everyday comforts.", 4),
+  cat("giloz", "Small Chops", "Kelewele, khebab and things to snack on.", 5),
+  cat("giloz", "Salads & Continental", "Fresh plates from the continental side of the kitchen.", 6),
+  cat("giloz", "Naturia Drinks", "Naturia brews, malts, minerals and more.", 7),
   // Sefofo
   cat("sefofo", "Home Classics", "The plates that taste like a visit home.", 1),
   cat("sefofo", "Soups & Swallows", "Comfort in a bowl, the way grandma made it.", 2),
   cat("sefofo", "Rice & Grains", "Everyday favourites, generous portions.", 3),
   cat("sefofo", "Sides", "Little extras to complete the plate.", 4),
-  cat("sefofo", "Naturia Drinks", "Natural Ghanaian drinks, brewed fresh.", 5),
+  cat("sefofo", "Drinks & Liquids", "Naturia brews, malts, minerals and cold beer.", 5),
 ];
 
 /* ------------------------------------------------------------ products */
@@ -170,6 +187,53 @@ export const PRODUCTS: Product[] = [
     options: [],
     pairings: [],
   }),
+  mk("giloz", "Grills & Proteins", "Attieke & Grilled Tilapia", 8500, {
+    description:
+      "Fluffy cassava attieke crowned with grilled tilapia, fried plantain, fresh veggies and extra sauce — served in grand style.",
+    tags: ["new", "contains-fish"],
+    spiceLevel: 1,
+    tone: ["#C9A24B", "#4A3818"],
+    rating: [4.7, 64],
+    options: [SPICE],
+    pairings: ["giloz-naturia-sobolo"],
+  }),
+  mk("giloz", "Soups & Swallows", "Kenkey & Fried Fish", 5000, {
+    description: "Fermented corn kenkey with crisp fried fish, ground pepper and shito.",
+    tags: ["contains-fish"],
+    spiceLevel: 2,
+    tone: ["#B08A4A", "#3A2C16"],
+    rating: [4.6, 58],
+    options: [SPICE],
+    pairings: [],
+  }),
+  mk("giloz", "Home Favourites", "Boiled Yam & Egg Stew", 4500, {
+    description: "Five-star boiled yam with a rich tomato-and-egg stew, straight from the pot.",
+    tags: ["vegetarian"],
+    spiceLevel: 1,
+    tone: ["#D8B25A", "#4A3414"],
+    rating: [4.7, 49],
+    options: [],
+    pairings: ["giloz-naturia-pineapple-ginger"],
+  }),
+  mk("giloz", "Home Favourites", "Garifoto", 4000, {
+    eweName: "Garifɔtɔ",
+    description: "Gari tossed in seasoned palm-oil stew with egg — made the Giloz way.",
+    tags: [],
+    spiceLevel: 1,
+    tone: ["#C88A3A", "#42280F"],
+    rating: [4.6, 44],
+    options: [],
+    pairings: [],
+  }),
+  mk("giloz", "Salads & Continental", "Chicken Salad", 6000, {
+    description: "The authentic chicken salad — grilled strips over crisp greens and vegetables.",
+    tags: ["new"],
+    spiceLevel: 0,
+    tone: ["#5E7A3D", "#22301A"],
+    rating: [4.5, 38],
+    options: [],
+    pairings: ["giloz-naturia-pineapple-ginger"],
+  }),
   mk("giloz", "Naturia Drinks", "Naturia Sobolo", 1500, {
     description: "Hibiscus steeped with pineapple, ginger and cloves. Deep, tart and refreshing.",
     tags: ["vegan", "new"],
@@ -186,6 +250,33 @@ export const PRODUCTS: Product[] = [
     tone: ["#D8A93A", "#6A4E14"],
     rating: [4.8, 121],
     options: [{ name: "Size", choices: [{ name: "500ml", priceDelta: 0, isDefault: true }, { name: "1L", priceDelta: 1200 }] }],
+    pairings: [],
+  }),
+  mk("giloz", "Naturia Drinks", "Malta Guinness", 1200, {
+    description: "The classic malt — dark, sweet and ice-cold.",
+    tags: ["vegan"],
+    spiceLevel: 0,
+    tone: ["#4A2410", "#1E0E06"],
+    rating: [4.8, 96],
+    options: [],
+    pairings: [],
+  }),
+  mk("giloz", "Naturia Drinks", "Soft Drink", 1000, {
+    description: "Coca-Cola, Fanta or Sprite — chilled minerals for the table.",
+    tags: ["vegan"],
+    spiceLevel: 0,
+    tone: ["#B02A1E", "#3A0E0A"],
+    rating: [4.7, 84],
+    options: [SOFT_CHOICE],
+    pairings: [],
+  }),
+  mk("giloz", "Naturia Drinks", "Bottled Water", 500, {
+    description: "Still mineral water, properly cold.",
+    tags: ["vegan"],
+    spiceLevel: 0,
+    tone: ["#3A6EA5", "#12283E"],
+    rating: [4.9, 61],
+    options: [{ name: "Size", choices: [{ name: "500ml", priceDelta: 0, isDefault: true }, { name: "1.5L", priceDelta: 500 }] }],
     pairings: [],
   }),
 
@@ -290,6 +381,65 @@ export const PRODUCTS: Product[] = [
     options: [],
     pairings: [],
   }),
+  mk("sefofo", "Home Classics", "Gbatakpã", 4800, {
+    eweName: "Gbatakpã",
+    description: "If comfort food had a name, it would be Gbatakpã — hot, hearty and unmistakably home.",
+    tags: ["chefs-pick"],
+    spiceLevel: 2,
+    tone: ["#B5502B", "#3A1810"],
+    featured: true,
+    rating: [4.9, 87],
+    options: [SPICE],
+    pairings: ["sefofo-naturia-sobolo"],
+  }),
+  mk("sefofo", "Soups & Swallows", "Aborbitadi", 5200, {
+    eweName: "Aborbitadi",
+    description: "The beloved Eʋe delicacy — how do you like yours, with Akple or Banku?",
+    tags: ["contains-fish"],
+    spiceLevel: 2,
+    tone: ["#8E5A2A", "#2E1C0E"],
+    rating: [4.7, 52],
+    options: [SWALLOW_PAIR, SPICE],
+    pairings: ["sefofo-naturia-tamarind"],
+  }),
+  mk("sefofo", "Soups & Swallows", "Fufu & Soup — Sefofo Special", 5500, {
+    description:
+      "Rated among the best fufu in Accra — pounded soft, served in your choice of steaming soup.",
+    tags: ["chefs-pick"],
+    spiceLevel: 2,
+    tone: ["#C9A24B", "#4A3818"],
+    featured: true,
+    rating: [4.9, 118],
+    options: [SPICE, PROTEIN],
+    pairings: ["sefofo-naturia-sobolo"],
+  }),
+  mk("sefofo", "Home Classics", "Boiled Yam & Stew", 4000, {
+    description: "Perfectly boiled yam with your favourite stew — lunch that feels like home.",
+    tags: ["vegetarian"],
+    spiceLevel: 1,
+    tone: ["#D8B25A", "#4A3414"],
+    rating: [4.7, 66],
+    options: [],
+    pairings: [],
+  }),
+  mk("sefofo", "Rice & Grains", "Village Dawadawa Jollof", 5000, {
+    description: "New on the menu — smoky village-style jollof deepened with dawadawa.",
+    tags: ["new"],
+    spiceLevel: 1,
+    tone: ["#A34A22", "#3A180E"],
+    rating: [4.6, 33],
+    options: [SIZE, PROTEIN],
+    pairings: [],
+  }),
+  mk("sefofo", "Rice & Grains", "Plain Rice & Egusi", 4800, {
+    description: "Steamed rice with rich egusi stew — another new addition our regulars love.",
+    tags: ["new", "contains-fish"],
+    spiceLevel: 1,
+    tone: ["#7A8A3A", "#2A2E14"],
+    rating: [4.5, 29],
+    options: [],
+    pairings: [],
+  }),
   mk("sefofo", "Naturia Drinks", "Naturia Sobolo", 1500, {
     description: "Hibiscus steeped with pineapple, ginger and cloves. Deep, tart and refreshing.",
     tags: ["vegan", "new"],
@@ -309,11 +459,56 @@ export const PRODUCTS: Product[] = [
     options: [{ name: "Size", choices: [{ name: "500ml", priceDelta: 0, isDefault: true }, { name: "1L", priceDelta: 1200 }] }],
     pairings: [],
   }),
+  mk("sefofo", "Naturia Drinks", "Malta Guinness", 1200, {
+    description: "The classic malt — dark, sweet and ice-cold.",
+    tags: ["vegan"],
+    spiceLevel: 0,
+    tone: ["#4A2410", "#1E0E06"],
+    rating: [4.8, 74],
+    options: [],
+    pairings: [],
+  }),
+  mk("sefofo", "Naturia Drinks", "Soft Drink", 1000, {
+    description: "Coca-Cola, Fanta or Sprite — chilled minerals for the table.",
+    tags: ["vegan"],
+    spiceLevel: 0,
+    tone: ["#B02A1E", "#3A0E0A"],
+    rating: [4.7, 69],
+    options: [SOFT_CHOICE],
+    pairings: [],
+  }),
+  mk("sefofo", "Naturia Drinks", "Bottled Water", 500, {
+    description: "Still mineral water, properly cold.",
+    tags: ["vegan"],
+    spiceLevel: 0,
+    tone: ["#3A6EA5", "#12283E"],
+    rating: [4.9, 48],
+    options: [{ name: "Size", choices: [{ name: "500ml", priceDelta: 0, isDefault: true }, { name: "1.5L", priceDelta: 500 }] }],
+    pairings: [],
+  }),
+  mk("sefofo", "Naturia Drinks", "Club Beer", 1800, {
+    description: "Ghana's own premium lager, served ice-cold. 18+ only.",
+    tags: [],
+    spiceLevel: 0,
+    tone: ["#C9A24B", "#3E2C10"],
+    rating: [4.7, 57],
+    options: [],
+    pairings: [],
+  }),
+  mk("sefofo", "Naturia Drinks", "Star Beer", 1800, {
+    description: "The classic Ghanaian lager — crisp, golden, cold. 18+ only.",
+    tags: [],
+    spiceLevel: 0,
+    tone: ["#D8B25A", "#3E2C10"],
+    rating: [4.6, 51],
+    options: [],
+    pairings: [],
+  }),
 ];
 
 /* --------------------------------------------------------- builders */
 function cat(brand: BrandKey, name: string, description: string, position: number): Category {
-  const slug = slugify(name === "Naturia Drinks" ? "drinks" : name);
+  const slug = name.includes("Drinks") ? "drinks" : slugify(name);
   return { id: `${brand}-cat-${slug}`, brand, name, slug, description, position };
 }
 
@@ -330,7 +525,7 @@ interface MkOpts {
 }
 
 function mk(brand: BrandKey, categoryName: string, name: string, basePrice: number, o: MkOpts): Product {
-  const categorySlug = categoryName === "Naturia Drinks" ? "drinks" : slugify(categoryName);
+  const categorySlug = categoryName.includes("Drinks") ? "drinks" : slugify(categoryName);
   const slug = `${brand}-${slugify(name)}`;
   return {
     id: slug,
