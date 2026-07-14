@@ -103,21 +103,36 @@ const MANIFEST = {
   "food/sefofo-kelewele.jpg": wm("0/04", "Un_plat_d%27alloco_Fried_Plantains.JPG"),
 };
 
+// Wikimedia asks for a descriptive User-Agent and rate-limits bursts, so we
+// identify ourselves and back off on HTTP 429.
+const WM_UA =
+  "GilozSefofoMenuBot/1.0 (https://github.com/Mutalib713/giloz.sefofo; menu image vendoring)";
+const isWikimedia = (url) => url.includes("upload.wikimedia.org");
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 const root = new URL("../public/", import.meta.url).pathname;
 let ok = 0;
 let failed = 0;
 
 async function get(url) {
-  const res = await fetch(url, {
-    headers: { "user-agent": UA, accept: "image/*,*/*;q=0.8" },
-    redirect: "follow",
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const type = res.headers.get("content-type") ?? "";
-  if (!type.startsWith("image/")) throw new Error(`not an image (${type})`);
-  const buf = Buffer.from(await res.arrayBuffer());
-  if (buf.length < 2048) throw new Error(`too small (${buf.length}B)`);
-  return buf;
+  const ua = isWikimedia(url) ? WM_UA : UA;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const res = await fetch(url, {
+      headers: { "user-agent": ua, accept: "image/*,*/*;q=0.8" },
+      redirect: "follow",
+    });
+    if (res.status === 429 || res.status === 503) {
+      await sleep(2000 * (attempt + 1) + Math.floor(Math.random() * 1000));
+      continue;
+    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const type = res.headers.get("content-type") ?? "";
+    if (!type.startsWith("image/")) throw new Error(`not an image (${type})`);
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length < 2048) throw new Error(`too small (${buf.length}B)`);
+    return buf;
+  }
+  throw new Error("HTTP 429 after retries");
 }
 
 for (const [file, url] of Object.entries(MANIFEST)) {
@@ -142,6 +157,8 @@ for (const [file, url] of Object.entries(MANIFEST)) {
     failed++;
     console.warn(`✗ ${file}  — ${err.message} (UI falls back to gradient)`);
   }
+  // be polite between requests (Wikimedia especially)
+  await sleep(isWikimedia(url) ? 900 : 150);
 }
 
 console.log(`\nDone: ${ok} downloaded, ${failed} skipped.`);
