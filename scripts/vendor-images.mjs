@@ -4,15 +4,21 @@
  * Runs in GitHub Actions (see .github/workflows/vendor-images.yml), where the
  * runner has open internet access. Sources, in order of preference:
  *  1. the brands' own Instagram posts (matched to dishes by caption),
- *  2. Wikimedia Commons (authentic Ghanaian dishes, stable free URLs),
+ *  2. Wikimedia Commons — direct files for authentic Ghanaian dishes, or a
+ *     scored `wmSearch(...)` lookup for photos we have no exact filename for
+ *     (packaged drinks, restaurant venues),
  *  3. Unsplash stand-ins.
  * Failures are skipped (the UI falls back to a designed gradient), so an
- * expired URL can never break the build. For Wikimedia thumbs, the script
- * retries the original file if the 1200px thumb doesn't exist.
+ * expired URL or an empty search can never break the build. For Wikimedia
+ * thumbs, the script retries the original file if the sized thumb is absent.
+ *
+ * Idempotent: a file that already exists in public/ is kept, so good photos
+ * survive re-runs and expired Instagram links aren't re-fetched. To re-vendor
+ * something, delete the file (and, for a search, tweak its keyword) and push.
  *
  * Later, swap these local files for Cloudinary URLs without touching the UI.
  */
-import { mkdir, writeFile } from "node:fs/promises";
+import { access, mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 
 const UA =
@@ -106,16 +112,16 @@ const MANIFEST = {
   "food/sefofo-kelewele.jpg": wm("0/04", "Un_plat_d%27alloco_Fried_Plantains.JPG"),
 
   // --- packaged drinks (shared by both brands; resolved from Commons search) ---
-  "food/drinks-water.jpg": wmSearch("bottled water plastic bottle"),
+  "food/drinks-water.jpg": wmSearch("bottled water white background"),
   "food/drinks-soft.jpg": wmSearch("glass of cola soft drink ice"),
   "food/drinks-pineapple-ginger.jpg": wmSearch("pineapple juice glass"),
-  "food/drinks-malt.jpg": wmSearch("malt drink glass"),
-  "food/drinks-tamarind.jpg": wmSearch("tamarind juice drink"),
+  "food/drinks-malt.jpg": wmSearch("Malta malt drink bottle"),
+  "food/drinks-tamarind.jpg": wmSearch("tamarind juice glass"),
   "food/drinks-beer.jpg": wmSearch("lager beer glass"),
 
   // --- restaurant venues (for the "Visit Giloz / Sefofo" cards) ---
   "brands/giloz-venue.jpg": wmSearch("restaurant dining room interior"),
-  "brands/sefofo-venue.jpg": wmSearch("cozy restaurant interior wooden"),
+  "brands/sefofo-venue.jpg": wmSearch("restaurant interior wooden tables dining"),
 };
 
 // Wikimedia asks for a descriptive User-Agent and rate-limits bursts, so we
@@ -150,18 +156,25 @@ async function get(url) {
   throw new Error("HTTP 429 after retries");
 }
 
+// Commons is a free-media dump, so a naive "first hit" often returns museum
+// artefacts, specimens or tiny icons. Reject those by title and score the rest.
+const BAD_TITLE =
+  /museum|antique|vintage|specimen|art-?[ei]fact|fossil|\bcoin\b|stamp|banknote|sculpture|excavat|archae|accession|heritage|\bjar\b|\bempty\b|bottle_?cap|label|logo|diagram|\b1[89]\d\d\b/i;
+
 /**
  * Resolve a `wmsearch:<keyword>` spec to a real Commons image URL at build time.
- * Uses the search generator, then returns the first raster (jpg/png) hit's 1400px
- * thumb. Lets us reference photos we don't have exact filenames for (drinks,
- * venues) without hard-coding brittle URLs.
+ * Fetches candidates via the search generator, drops non-photos / artefacts /
+ * tiny images, then scores the rest by how many keyword tokens appear in the
+ * file title (plus mild bonuses for size and a sane aspect ratio). Lets us
+ * reference photos we have no exact filename for without brittle hard-coded URLs.
  */
 async function resolveWikimediaSearch(keyword) {
   const api =
     "https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search" +
-    "&gsrnamespace=6&gsrlimit=12&gsrsearch=" +
+    "&gsrnamespace=6&gsrlimit=20&gsrsearch=" +
     encodeURIComponent(keyword) +
     "&prop=imageinfo&iiprop=url|mime|size&iiurlwidth=1400";
+  const tokens = keyword.toLowerCase().split(/\s+/).filter((t) => t.length > 2);
   for (let attempt = 0; attempt < 5; attempt++) {
     const res = await fetch(api, {
       headers: { "user-agent": WM_UA, accept: "application/json" },
@@ -174,15 +187,29 @@ async function resolveWikimediaSearch(keyword) {
     if (!res.ok) throw new Error(`search HTTP ${res.status}`);
     const data = await res.json();
     const pages = Object.values(data?.query?.pages ?? {});
-    pages.sort((a, b) => (a.index ?? 0) - (b.index ?? 0)); // honour relevance rank
+    let best = null;
+    let bestScore = -Infinity;
     for (const p of pages) {
       const info = p?.imageinfo?.[0];
       const mime = info?.mime ?? "";
       if (!/^image\/(jpe?g|png)$/.test(mime)) continue; // skip svg/gif/tiff/pdf
-      const url = info.thumburl || info.url;
-      if (url) return url;
+      const title = (p.title ?? "").toLowerCase();
+      if (BAD_TITLE.test(title)) continue; // skip artefacts, logos, diagrams
+      const w = info.width ?? 0;
+      const h = info.height ?? 0;
+      if (w < 500 || h < 400) continue; // skip icons / thumbnails
+      let score = -(p.index ?? 0) * 0.1; // mild nod to search relevance rank
+      for (const t of tokens) if (title.includes(t)) score += 3;
+      if (w >= 1000) score += 1;
+      const ar = w / h;
+      if (ar >= 0.6 && ar <= 2.2) score += 1; // sane, non-panoramic framing
+      if (score > bestScore) {
+        bestScore = score;
+        best = info;
+      }
     }
-    throw new Error(`no raster image for "${keyword}"`);
+    if (best) return best.thumburl || best.url;
+    throw new Error(`no good raster image for "${keyword}"`);
   }
   throw new Error(`search HTTP 429 after retries for "${keyword}"`);
 }
@@ -190,6 +217,15 @@ async function resolveWikimediaSearch(keyword) {
 for (const [file, spec] of Object.entries(MANIFEST)) {
   const dest = join(root, file);
   let url = spec;
+  // Idempotent: keep whatever is already vendored (preserves good photos and
+  // avoids re-hitting expired Instagram links). Delete a file to force a refresh.
+  try {
+    await access(dest);
+    console.log(`• ${file}  (kept)`);
+    continue;
+  } catch {
+    /* not present — fetch it below */
+  }
   try {
     if (url.startsWith("wmsearch:")) url = await resolveWikimediaSearch(url.slice(9));
     let buf;
