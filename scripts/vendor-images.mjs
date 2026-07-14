@@ -22,6 +22,10 @@ const u = (id) => `https://images.unsplash.com/${id}?w=1200&q=75&auto=format&fit
 /** wikimedia commons: hash path + filename → 1200px thumb (original as fallback) */
 const wm = (hashPath, file) =>
   `https://upload.wikimedia.org/wikipedia/commons/thumb/${hashPath}/${file}/1200px-${file}`;
+/** wikimedia commons file by name (Special:FilePath redirects to the real URL) */
+const fp = (file) => `https://commons.wikimedia.org/wiki/Special:FilePath/${file}?width=1400`;
+/** resolve at build time: search Wikimedia Commons for the first good photo */
+const wmSearch = (keyword) => `wmsearch:${keyword}`;
 
 /** file (under public/) → source URL */
 const MANIFEST = {
@@ -48,8 +52,7 @@ const MANIFEST = {
     "https://scontent-den2-1.cdninstagram.com/v/t51.71878-15/502086894_3072203762926957_8954379514213121343_n.jpg?stp=dst-jpg_e15_fr_p1080x1080_tt6&_nc_ht=scontent-den2-1.cdninstagram.com&_nc_cat=101&_nc_oc=Q6cZ2gFoNyCjOn9lc6aSs4icJ-9OeXBBwqmZ_xVDERX1uPK4h2nMEEnw5lZlrxbR3aIkOOg&_nc_ohc=e8GD_XVkN8gQ7kNvwE_FnVS&_nc_gid=_M-QTsB-6dxyJpGoLgq3Og&edm=ADp7STQBAAAA&ccb=7-5&oh=00_AQBc-1Guu5o8acgnp-ij_XDS9aGh2GoXrCb8cL7rFcX4gA&oe=6A5AA53E&_nc_sid=c6f216",
   "food/giloz-chicken-salad.jpg":
     "https://scontent-sjc6-1.cdninstagram.com/v/t51.71878-15/503024347_2187661938348217_2311618439783149046_n.jpg?stp=dst-jpg_e15_fr_p1080x1080_tt6&_nc_ht=scontent-sjc6-1.cdninstagram.com&_nc_cat=101&_nc_oc=Q6cZ2gF06YOsaALb-WqOfXUbbxjyA8JEGTqFr4GSNmvuC3tTp4Bo_biXRtQ4TjYBnVKDddY&_nc_ohc=Y-Hx9z8U1esQ7kNvwHW5MwF&_nc_gid=hY1-TrSzZjR3BTjFr4VJUQ&edm=ADp7STQBAAAA&ccb=7-5&oh=00_AQBajiBz1l3KPqQCZOsD2TTJlJME3ODe2ZFr4Ags1bxSeQ&oe=6A5AD410&_nc_sid=c6f216",
-  "food/giloz-garifoto.jpg":
-    "https://scontent-atl3-1.cdninstagram.com/v/t51.71878-15/491433707_663930473173584_4620213361960523185_n.jpg?stp=dst-jpg_e15_fr_p1080x1080_tt6&_nc_ht=scontent-atl3-1.cdninstagram.com&_nc_cat=100&_nc_oc=Q6cZ2gH6XEFRSLIKQeDViV9ILMoY9sVQCgWW_RJ2dtFdkLFsQ8tb5OeieoCHcq_7BayWY5w&_nc_ohc=W-WE_U1YODIQ7kNvwGhMpPy&_nc_gid=d-sMtCidV7DDMP5P3Y0SRw&edm=ADp7STQBAAAA&ccb=7-5&oh=00_AQAmBnKYNsGS8rk7VjTfw9Hr9SGAmDmPSqlMKu2zrYxswA&oe=6A5ABA28&_nc_sid=c6f216",
+  "food/giloz-garifoto.jpg": wmSearch("gari foto Ghanaian food"),
   "food/hero-giloz.jpg":
     "https://scontent-ord5-1.cdninstagram.com/v/t51.71878-15/503875811_712999631479967_6270686632988035438_n.jpg?stp=dst-jpg_e15_fr_p1080x1080_tt6&_nc_ht=scontent-ord5-1.cdninstagram.com&_nc_cat=111&_nc_oc=Q6cZ2gG1-1Goq-V9c2K4sg8VmxFFIaiwbTij29i3FCbhL73RZFO3vvVKk5Whq4tlonwjJ3k&_nc_ohc=4blUSdrUfrMQ7kNvwEeDcti&_nc_gid=O726NyZ2pg9go5TGUCENXQ&edm=ADp7STQBAAAA&ccb=7-5&oh=00_AQDL1FFebGM9mbEKZ5BYWbUHtf_pKLDxkvmXGifwZv00Bw&oe=6A5A9EFD&_nc_sid=c6f216",
 
@@ -101,6 +104,18 @@ const MANIFEST = {
   "food/sefofo-konkonte-groundnut-soup.jpg": wm("5/52", "Kokonte.jpg"),
   "food/sefofo-gari-beans.jpg": wm("3/34", "Gob3_1.0.jpg"),
   "food/sefofo-kelewele.jpg": wm("0/04", "Un_plat_d%27alloco_Fried_Plantains.JPG"),
+
+  // --- packaged drinks (shared by both brands; resolved from Commons search) ---
+  "food/drinks-water.jpg": wmSearch("bottled water plastic bottle"),
+  "food/drinks-soft.jpg": wmSearch("glass of cola soft drink ice"),
+  "food/drinks-pineapple-ginger.jpg": wmSearch("pineapple juice glass"),
+  "food/drinks-malt.jpg": wmSearch("malt drink glass"),
+  "food/drinks-tamarind.jpg": wmSearch("tamarind juice drink"),
+  "food/drinks-beer.jpg": wmSearch("lager beer glass"),
+
+  // --- restaurant venues (for the "Visit Giloz / Sefofo" cards) ---
+  "brands/giloz-venue.jpg": wmSearch("restaurant dining room interior"),
+  "brands/sefofo-venue.jpg": wmSearch("cozy restaurant interior wooden"),
 };
 
 // Wikimedia asks for a descriptive User-Agent and rate-limits bursts, so we
@@ -135,16 +150,55 @@ async function get(url) {
   throw new Error("HTTP 429 after retries");
 }
 
-for (const [file, url] of Object.entries(MANIFEST)) {
+/**
+ * Resolve a `wmsearch:<keyword>` spec to a real Commons image URL at build time.
+ * Uses the search generator, then returns the first raster (jpg/png) hit's 1400px
+ * thumb. Lets us reference photos we don't have exact filenames for (drinks,
+ * venues) without hard-coding brittle URLs.
+ */
+async function resolveWikimediaSearch(keyword) {
+  const api =
+    "https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search" +
+    "&gsrnamespace=6&gsrlimit=12&gsrsearch=" +
+    encodeURIComponent(keyword) +
+    "&prop=imageinfo&iiprop=url|mime|size&iiurlwidth=1400";
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const res = await fetch(api, {
+      headers: { "user-agent": WM_UA, accept: "application/json" },
+      redirect: "follow",
+    });
+    if (res.status === 429 || res.status === 503) {
+      await sleep(2000 * (attempt + 1) + Math.floor(Math.random() * 1000));
+      continue;
+    }
+    if (!res.ok) throw new Error(`search HTTP ${res.status}`);
+    const data = await res.json();
+    const pages = Object.values(data?.query?.pages ?? {});
+    pages.sort((a, b) => (a.index ?? 0) - (b.index ?? 0)); // honour relevance rank
+    for (const p of pages) {
+      const info = p?.imageinfo?.[0];
+      const mime = info?.mime ?? "";
+      if (!/^image\/(jpe?g|png)$/.test(mime)) continue; // skip svg/gif/tiff/pdf
+      const url = info.thumburl || info.url;
+      if (url) return url;
+    }
+    throw new Error(`no raster image for "${keyword}"`);
+  }
+  throw new Error(`search HTTP 429 after retries for "${keyword}"`);
+}
+
+for (const [file, spec] of Object.entries(MANIFEST)) {
   const dest = join(root, file);
+  let url = spec;
   try {
+    if (url.startsWith("wmsearch:")) url = await resolveWikimediaSearch(url.slice(9));
     let buf;
     try {
       buf = await get(url);
     } catch (err) {
-      // wikimedia: 1200px thumb may not exist for small originals — fetch the original
+      // wikimedia: the sized thumb may not exist for small originals — fetch the original
       const m = url.match(
-        /^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/(.+)\/([^/]+)\/1200px-.+$/,
+        /^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/(.+)\/([^/]+)\/\d+px-[^/]+$/,
       );
       if (!m) throw err;
       buf = await get(`https://upload.wikimedia.org/wikipedia/commons/${m[1]}/${m[2]}`);

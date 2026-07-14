@@ -6,7 +6,7 @@ import { Reveal } from "@/components/motion";
 import { FoodImage } from "@/components/common/food-image";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { BRANDS, BRAND_KEYS, HOUSE } from "@/lib/brands";
-import { BRAND_HERO } from "@/lib/mock/images";
+import { BRAND_VENUE } from "@/lib/mock/images";
 
 export const metadata: Metadata = {
   title: "About",
@@ -58,7 +58,7 @@ export default function AboutPage() {
                   data-brand={k}
                   className="overflow-hidden rounded-3xl border border-line bg-paper text-ink"
                 >
-                  <FoodImage src={BRAND_HERO[k]} alt={b.name} tone={["#8A5A2B", "#241610"]} className="aspect-[16/9]" />
+                  <FoodImage src={BRAND_VENUE[k]} alt={`Inside ${b.name}`} tone={["#8A5A2B", "#241610"]} className="aspect-[16/9]" />
                   <div className="p-7">
                     <div className="flex items-center gap-3">
                       <BrandLogo brand={k} size={44} className="border border-line" />

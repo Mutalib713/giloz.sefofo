@@ -10,7 +10,7 @@
  * single component.
  *
  * Packaged drinks (malt, minerals, water, beer, tamarind, pineapple-ginger)
- * intentionally keep their designed colour gradients.
+ * use shared stock product shots resolved from Wikimedia Commons.
  */
 
 export const PRODUCT_IMAGES: Record<string, string> = {
@@ -32,6 +32,10 @@ export const PRODUCT_IMAGES: Record<string, string> = {
   "giloz-khebab-platter": "/food/giloz-khebab-platter.jpg", // Wikimedia
   "giloz-kelewele": "/food/giloz-kelewele.jpg", // Wikimedia
   "giloz-naturia-sobolo": "/food/naturia-sobolo.jpg", // their IG
+  "giloz-naturia-pineapple-ginger": "/food/drinks-pineapple-ginger.jpg", // stock
+  "giloz-malta-guinness": "/food/drinks-malt.jpg", // stock
+  "giloz-soft-drink": "/food/drinks-soft.jpg", // stock
+  "giloz-bottled-water": "/food/drinks-water.jpg", // stock
 
   // ---- Sefofo ----
   "sefofo-red-red-fried-plantain": "/food/sefofo-red-red-fried-plantain.jpg", // Wikimedia
@@ -50,6 +54,12 @@ export const PRODUCT_IMAGES: Record<string, string> = {
   "sefofo-boiled-yam-stew": "/food/sefofo-boiled-yam-stew.jpg", // their IG
   "sefofo-village-dawadawa-jollof": "/food/sefofo-village-dawadawa-jollof.jpg", // their IG
   "sefofo-naturia-sobolo": "/food/naturia-sobolo.jpg", // their IG
+  "sefofo-naturia-tamarind": "/food/drinks-tamarind.jpg", // stock
+  "sefofo-malta-guinness": "/food/drinks-malt.jpg", // stock
+  "sefofo-soft-drink": "/food/drinks-soft.jpg", // stock
+  "sefofo-bottled-water": "/food/drinks-water.jpg", // stock
+  "sefofo-club-beer": "/food/drinks-beer.jpg", // stock
+  "sefofo-star-beer": "/food/drinks-beer.jpg", // stock
 };
 
 export const BRAND_LOGOS: Record<string, string> = {
@@ -60,4 +70,10 @@ export const BRAND_LOGOS: Record<string, string> = {
 export const BRAND_HERO: Record<string, string> = {
   giloz: "/food/hero-giloz.jpg",
   sefofo: "/food/hero-sefofo.jpg",
+};
+
+/** Photos of the actual restaurants — used on the "Visit Giloz / Sefofo" cards. */
+export const BRAND_VENUE: Record<string, string> = {
+  giloz: "/brands/giloz-venue.jpg",
+  sefofo: "/brands/sefofo-venue.jpg",
 };
