@@ -111,10 +111,10 @@ const MANIFEST = {
   "food/sefofo-kelewele.jpg": wm("0/04", "Un_plat_d%27alloco_Fried_Plantains.JPG"),
 
   // --- packaged drinks (shared by both brands; resolved from Commons search) ---
-  // Malt, tamarind and garifoto intentionally keep their designed gradients:
-  // free-media search only returned mismatches (a museum jar, a meal scene),
-  // and a clean gradient beats a wrong photo. Drop real product shots in later.
-  "food/drinks-water.jpg": wmSearch("mineral water bottle"),
+  // Water, malt, tamarind and garifoto intentionally keep their designed
+  // gradients: free-media search only returned mismatches (antique/museum
+  // bottles, a propagation vase, a meal scene), and a clean gradient beats a
+  // wrong photo. Drop real product shots in later.
   "food/drinks-soft.jpg": wmSearch("glass of cola soft drink ice"),
   "food/drinks-pineapple-ginger.jpg": wmSearch("pineapple juice glass"),
   "food/drinks-beer.jpg": wmSearch("lager beer glass"),

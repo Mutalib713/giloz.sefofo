@@ -9,9 +9,10 @@
  * breaks. Swap these paths for Cloudinary URLs later without touching a
  * single component.
  *
- * Some packaged drinks (water, minerals, beer, pineapple-ginger) use shared
- * stock product shots resolved from Wikimedia Commons; malt and tamarind keep
- * their designed colour gradients (free-media search had no clean match).
+ * Some packaged drinks (minerals, beer, pineapple-ginger) use shared stock
+ * product shots resolved from Wikimedia Commons; water, malt and tamarind keep
+ * their designed colour gradients (free-media search had no clean match — it
+ * only returned antique/museum bottles and props).
  */
 
 export const PRODUCT_IMAGES: Record<string, string> = {
@@ -34,7 +35,6 @@ export const PRODUCT_IMAGES: Record<string, string> = {
   "giloz-naturia-sobolo": "/food/naturia-sobolo.jpg", // their IG
   "giloz-naturia-pineapple-ginger": "/food/drinks-pineapple-ginger.jpg", // stock
   "giloz-soft-drink": "/food/drinks-soft.jpg", // stock
-  "giloz-bottled-water": "/food/drinks-water.jpg", // stock
 
   // ---- Sefofo ----
   "sefofo-red-red-fried-plantain": "/food/sefofo-red-red-fried-plantain.jpg", // Wikimedia
@@ -54,7 +54,6 @@ export const PRODUCT_IMAGES: Record<string, string> = {
   "sefofo-village-dawadawa-jollof": "/food/sefofo-village-dawadawa-jollof.jpg", // their IG
   "sefofo-naturia-sobolo": "/food/naturia-sobolo.jpg", // their IG
   "sefofo-soft-drink": "/food/drinks-soft.jpg", // stock
-  "sefofo-bottled-water": "/food/drinks-water.jpg", // stock
   "sefofo-club-beer": "/food/drinks-beer.jpg", // stock
   "sefofo-star-beer": "/food/drinks-beer.jpg", // stock
 };
