@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { FileText, Mail, MessageCircle, Phone } from "lucide-react";
+import { FileText, Mail, MessageCircle, MessageSquareHeart, Phone } from "lucide-react";
 import { Container } from "./container";
+import { SocialIcon } from "@/components/common/social-icons";
 import {
   BRANDS,
   BRAND_KEYS,
@@ -19,6 +20,7 @@ const EXPLORE = [
   { label: "About us", href: "/about" },
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
+  { label: "Feedback", href: "/feedback" },
   { label: "Wishlist", href: "/wishlist" },
   { label: "My orders", href: "/account" },
 ];
@@ -73,38 +75,37 @@ function BrandBlock({ brand, showName }: { brand: BrandKey; showName: boolean })
         </li>
       </ul>
 
-      <div className="mt-4 flex flex-wrap gap-1.5">
+      <div className="mt-4 flex flex-wrap items-center gap-2">
         {b.socials.map((s) => (
           <a
             key={s.platform}
             href={s.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-full border border-line px-2.5 py-1 text-xs text-ink/80 transition-colors hover:border-brand hover:text-brand"
+            aria-label={`${b.name} on ${SOCIAL_LABELS[s.platform]}`}
+            className="grid size-9 place-items-center rounded-full border border-line bg-surface text-ink transition-colors hover:border-brand hover:text-brand"
           >
-            {SOCIAL_LABELS[s.platform]}
+            <SocialIcon platform={s.platform} className="size-[17px]" />
           </a>
         ))}
-        {b.feedbackUrl && (
-          <a
-            href={b.feedbackUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-line px-2.5 py-1 text-xs text-ink/80 transition-colors hover:border-brand hover:text-brand"
-          >
-            Feedback
-          </a>
-        )}
       </div>
 
-      <Link
-        href={whatsappLink(brand, `Hi ${b.name}! I'd like to place an order.`)}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-on-brand transition-transform hover:-translate-y-0.5"
-      >
-        <MessageCircle className="size-4" /> WhatsApp {b.shortName}
-      </Link>
+      <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <Link
+          href={whatsappLink(brand, `Hi ${b.name}! I'd like to place an order.`)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-on-brand transition-transform hover:-translate-y-0.5"
+        >
+          <MessageCircle className="size-4" /> WhatsApp {b.shortName}
+        </Link>
+        <Link
+          href={`/feedback#${brand}`}
+          className="inline-flex items-center gap-1.5 text-sm text-ink/80 transition-colors hover:text-brand"
+        >
+          <MessageSquareHeart className="size-4 text-brand" /> Give feedback
+        </Link>
+      </div>
     </div>
   );
 }

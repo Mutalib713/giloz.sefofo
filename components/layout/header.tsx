@@ -17,6 +17,7 @@ const NAV = [
   { label: "Giloz", href: "/giloz" },
   { label: "Sefofo", href: "/sefofo" },
   { label: "About", href: "/about" },
+  { label: "Feedback", href: "/feedback" },
 ];
 
 export function Header() {
@@ -135,6 +136,7 @@ export function Header() {
                 { label: "Wishlist", href: "/wishlist" },
                 { label: "About", href: "/about" },
                 { label: "Contact", href: "/contact" },
+                { label: "Feedback", href: "/feedback" },
               ].map((n, i) => (
                 <motion.div
                   key={n.href}

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Clock, Mail, MapPin, MessageCircle, MessageSquareHeart, Phone } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { Reveal } from "@/components/motion";
 import { BrandLogo } from "@/components/brand/brand-logo";
+import { SocialIcon } from "@/components/common/social-icons";
 import { BRANDS, BRAND_KEYS, SOCIAL_LABELS, telLink, whatsappLink } from "@/lib/brands";
 
 export const metadata: Metadata = {
@@ -63,16 +65,17 @@ export default function ContactPage() {
                   </li>
                 </ul>
 
-                <div className="mt-5 flex flex-wrap gap-2">
+                <div className="mt-5 flex flex-wrap items-center gap-2">
                   {b.socials.map((s) => (
                     <a
                       key={s.platform}
                       href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded-full border border-line px-3 py-1.5 text-xs text-ink/80 transition-colors hover:border-brand hover:text-brand"
+                      aria-label={`${b.name} on ${SOCIAL_LABELS[s.platform]}`}
+                      className="grid size-10 place-items-center rounded-full border border-line bg-surface text-ink transition-colors hover:border-brand hover:text-brand"
                     >
-                      {SOCIAL_LABELS[s.platform]}
+                      <SocialIcon platform={s.platform} className="size-[18px]" />
                     </a>
                   ))}
                 </div>
@@ -86,16 +89,12 @@ export default function ContactPage() {
                   >
                     <MessageCircle className="size-4" /> WhatsApp {b.shortName}
                   </a>
-                  {b.feedbackUrl && (
-                    <a
-                      href={b.feedbackUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-line px-6 py-3 text-sm font-medium transition-colors hover:border-brand hover:text-brand"
-                    >
-                      <MessageSquareHeart className="size-4 text-brand" /> Share your feedback
-                    </a>
-                  )}
+                  <Link
+                    href={`/feedback#${k}`}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-line px-6 py-3 text-sm font-medium transition-colors hover:border-brand hover:text-brand"
+                  >
+                    <MessageSquareHeart className="size-4 text-brand" /> Share your feedback
+                  </Link>
                 </div>
               </article>
             </Reveal>

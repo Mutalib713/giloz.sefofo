@@ -77,7 +77,9 @@ export default async function MenuPage({
         </Reveal>
       </Container>
 
-      <div className="sticky top-16 z-30 border-y border-line glass">
+      {/* Non-sticky on mobile so it scrolls away and doesn't cover the dishes;
+          sticky from sm up, where there's room for a pinned toolbar. */}
+      <div className="z-30 border-y border-line glass sm:sticky sm:top-16">
         <Container className="flex flex-col gap-3 py-4">
           <CategoryRail categories={categories} sp={clean} />
           <MenuFilters sp={clean} diets={dietTags().map((t) => ({ slug: t.slug, label: t.label }))} />
