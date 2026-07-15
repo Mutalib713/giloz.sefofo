@@ -52,7 +52,7 @@ export interface Product {
   /** two hex colors for the CSS "plate" placeholder shown while/if no photo */
   imageTone: [string, string];
   options: OptionGroup[];
-  /** slugs of paired products (Naturia drinks, sides) */
+  /** slugs of paired products (drinks, extras, sides) */
   pairings: string[];
 }
 

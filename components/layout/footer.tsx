@@ -21,7 +21,7 @@ const columns = [
       { label: "Contact", href: "/contact" },
       { label: "Wishlist", href: "/wishlist" },
       { label: "My orders", href: "/account" },
-      { label: "Naturia drinks", href: "/giloz/menu?category=drinks" },
+      { label: "Drinks & cocktails", href: "/sefofo/menu?category=drinks" },
     ],
   },
 ];

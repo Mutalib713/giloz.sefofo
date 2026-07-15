@@ -1,0 +1,46 @@
+name: Fetch image candidates
+
+# Downloads the brand-photo candidates (their Instagram + Google Maps
+# listings) on a runner with open internet and publishes them to the
+# throwaway `image-candidates` branch for visual review. That branch is
+# deleted after the chosen photos are placed into public/, so the bulky
+# review set never enters main history.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/local-repo-setup-hgm81b]
+    paths:
+      - "scripts/image-candidates.json"
+      - "scripts/fetch-candidates.mjs"
+      - ".github/workflows/fetch-candidates.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-candidates
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download candidate images
+        run: node scripts/fetch-candidates.mjs
+
+      - name: Publish to throwaway branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch --orphan image-candidates
+          mkdir -p candidates
+          mv candidates-out/* candidates/ 2>/dev/null || true
+          git add candidates/
+          if git diff --cached --quiet; then
+            echo "Nothing downloaded; not publishing."
+            exit 0
+          fi
+          git commit -m "chore: image candidates for review (throwaway branch)"
+          git push --force origin image-candidates

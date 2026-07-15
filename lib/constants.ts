@@ -22,7 +22,7 @@ export const HOW_IT_WORKS = [
   },
   {
     title: "Build your order",
-    body: "Browse a living, photographed menu. Add sides and Naturia drinks.",
+    body: "Browse a living, photographed menu. Add extras and drinks.",
   },
   {
     title: "Pay your way",

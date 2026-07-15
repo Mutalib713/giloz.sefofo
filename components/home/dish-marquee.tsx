@@ -1,14 +1,14 @@
 const DISHES = [
   "Akple & Ademe",
-  "Banku & Tilapia",
+  "Tilapia & Hot Pepper",
   "Fufu & Light Soup",
-  "Kontomire",
+  "Gbatakpã",
   "Waakye",
-  "Red-Red",
+  "Totonyanya",
   "Abolo",
   "Jollof",
-  "Groundnut Soup",
-  "Sobolo",
+  "Fetri Toto",
+  "Shawarma",
 ];
 
 export function DishMarquee() {

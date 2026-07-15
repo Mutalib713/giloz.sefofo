@@ -70,7 +70,7 @@ const FAQS: { category: string; items: { q: string; a: string }[] }[] = [
       },
       {
         q: "Do you have vegetarian or vegan options?",
-        a: "Yes — filter the menu by “Vegan” or “Vegetarian”. Red-red, kelewele and gari & beans are all plant-based favourites.",
+        a: "Yes — filter the menu by “Vegan” or “Vegetarian”. Boiled yam with palava sauce or garden egg stew, and the potato and vegetable salads, are favourites.",
       },
       {
         q: "How spicy is the food?",
