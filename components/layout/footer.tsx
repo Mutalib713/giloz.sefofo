@@ -3,14 +3,22 @@ import { Instagram, MessageCircle } from "lucide-react";
 import { Container } from "./container";
 import { BRANDS, HOUSE, whatsappLink } from "@/lib/brands";
 
-const columns = [
+interface FooterLink {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+
+const columns: { title: string; links: FooterLink[] }[] = [
   {
     title: "Kitchens",
     links: [
       { label: "Giloz Restaurant", href: "/giloz" },
       { label: "Giloz menu", href: "/giloz/menu" },
+      { label: "Giloz menu (PDF)", href: BRANDS.giloz.menuPdf, external: true },
       { label: "Sefofo", href: "/sefofo" },
       { label: "Sefofo menu", href: "/sefofo/menu" },
+      { label: "Sefofo menu (PDF)", href: BRANDS.sefofo.menuPdf, external: true },
     ],
   },
   {
@@ -63,7 +71,11 @@ export function Footer() {
               <ul className="mt-4 space-y-2.5">
                 {col.links.map((l) => (
                   <li key={l.href}>
-                    <Link href={l.href} className="text-sm text-ink/80 transition-colors hover:text-brand">
+                    <Link
+                      href={l.href}
+                      {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                      className="text-sm text-ink/80 transition-colors hover:text-brand"
+                    >
                       {l.label}
                     </Link>
                   </li>

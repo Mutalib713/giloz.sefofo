@@ -33,6 +33,8 @@ export interface Brand {
   city: string;
   hours: string;
   story: string;
+  /** path to the restaurant's own printed menu, served from public/ */
+  menuPdf: string;
   instagram: string;
   tiktok: string;
   /** env var that holds the live WhatsApp number, with a safe fallback */
@@ -55,6 +57,7 @@ export const BRANDS: Record<BrandKey, Brand> = {
     hours: "Daily · 11:00 – 23:00",
     story:
       "A proud, full-service kitchen in Pig-Farm. Authentic Eʋe cooking under spotlight — with a range wide enough for any table, and Naturia natural drinks to pair.",
+    menuPdf: "/menus/giloz-menu.pdf",
     instagram: "giloz_restaurant",
     tiktok: "giloz_restaurant",
     whatsappEnv: "NEXT_PUBLIC_WHATSAPP_GILOZ",
@@ -74,6 +77,7 @@ export const BRANDS: Record<BrandKey, Brand> = {
     hours: "Daily · 11:00 – 22:00",
     story:
       "Seƒoƒo means ‘flower’ in Eʋe. A homestyle kitchen in Dzorwulu serving the meals that bring back memories — comfort food styled like a family table.",
+    menuPdf: "/menus/sefofo-menu.pdf",
     instagram: "sefofo.rlg",
     tiktok: "sefofo.rlg",
     whatsappEnv: "NEXT_PUBLIC_WHATSAPP_SEFOFO",

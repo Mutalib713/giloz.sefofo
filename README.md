@@ -42,9 +42,10 @@ Then open <http://localhost:3000>. Key routes to explore:
 |-------|------------|
 | `/` | Brand gateway — choose Giloz or Sefofo |
 | `/giloz` · `/sefofo` | Brand home pages |
-| `/giloz/menu` · `/sefofo/menu` | Living menus |
+| `/giloz/menu` · `/sefofo/menu` | Living menus (with a "View printed menu (PDF)" link) |
 | `/checkout`, `/wishlist`, `/account` | Ordering flow |
 | `/admin` | Admin dashboard |
+| `/menus/giloz-menu.pdf` · `/menus/sefofo-menu.pdf` | The restaurants' own printed menus |
 
 ### Scripts
 
@@ -59,6 +60,25 @@ Then open <http://localhost:3000>. Key routes to explore:
 
 To connect live services (Supabase, Paystack, Cloudinary, Google Maps, WhatsApp), fill in
 the corresponding keys in `.env.local` — see [`.env.example`](./.env.example) for the full list.
+
+## Menu content & imagery
+
+The menu data is transcribed from the restaurants' **actual printed menus** — real
+categories, dishes and prices for both kitchens (Giloz: Fried Rice Combo, Jollof Zone,
+Mixed Corner, Local Cuisine, The Salads; Sefofo: Locals, Continentals, Platters, Drinks &
+Cocktails, Extras). Lines that print one row per variant (e.g. "Ademe with Akple / with
+Banku") are modelled as a single dish with an option group whose price deltas reproduce
+every printed combination.
+
+- **Printed menus (PDF):** the originals live in [`public/menus/`](./public/menus) and are
+  linked from each menu page and the footer. Guests can view the real thing alongside the
+  interactive menu.
+- **Food photography:** each dish is matched to the brands' own photos (their Instagram and
+  Google Maps listings), compressed for the web. Dishes without a verified photo fall back
+  to a designed colour gradient rather than a wrong picture. The mapping lives in
+  [`lib/mock/images.ts`](./lib/mock/images.ts); candidate sources are recorded in
+  [`scripts/image-candidates.json`](./scripts/image-candidates.json).
+- **Restaurant entrances:** the "Visit" cards use real storefront photos of each kitchen.
 
 ## The architecture (read in order)
 

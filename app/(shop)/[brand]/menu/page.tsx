@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { UtensilsCrossed } from "lucide-react";
+import { FileText, UtensilsCrossed } from "lucide-react";
 import { BRANDS, isBrandKey } from "@/lib/brands";
 import { dietTags, getCategories, getMenu } from "@/lib/data/menu";
 import { Container } from "@/components/layout/container";
@@ -64,6 +65,15 @@ export default async function MenuPage({
           <p className="label text-brand">{b.name}</p>
           <h1 className="mt-2 font-serif text-4xl tracking-tight sm:text-6xl">The menu</h1>
           <p className="mt-3 max-w-xl text-muted">{b.story}</p>
+          <Link
+            href={b.menuPdf}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:border-brand hover:text-brand"
+          >
+            <FileText className="size-4" />
+            View {b.shortName}&apos;s printed menu (PDF)
+          </Link>
         </Reveal>
       </Container>
 
