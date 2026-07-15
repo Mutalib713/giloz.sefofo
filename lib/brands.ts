@@ -114,7 +114,8 @@ export const BRANDS: Record<BrandKey, Brand> = {
     phone: "0554177031",
     email: "sefofo.rlg@gmail.com",
     linktree: "https://linktr.ee/sefofo",
-    feedbackUrl: "https://linktr.ee/sefofo",
+    feedbackUrl:
+      "https://docs.google.com/forms/d/e/1FAIpQLSdDo23TO67Rnb_jC8MsmUtJ4cX6xTxNoR6HKVILtXmp_Yj8Iw/viewform",
     socials: [
       { platform: "instagram", label: "@sefofo.rlg", href: "https://instagram.com/sefofo.rlg" },
       { platform: "tiktok", label: "@sefofo.rlg", href: "https://tiktok.com/@sefofo.rlg" },
