@@ -76,7 +76,7 @@ export default async function MenuPage({
 
       <Container className="py-8 sm:py-10">
         <p className="label mb-6 text-muted">
-          {products.length} {pluralize(products.length, "dish")}
+          {products.length} {pluralize(products.length, "dish", "dishes")}
         </p>
         {products.length > 0 ? (
           <MenuGrid products={products} />
