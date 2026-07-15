@@ -19,6 +19,23 @@ export const HOUSE = {
 
 export type BrandKey = "giloz" | "sefofo";
 
+export type SocialPlatform = "instagram" | "tiktok" | "facebook" | "x" | "linktree";
+
+export interface BrandSocial {
+  platform: SocialPlatform;
+  label: string;
+  href: string;
+}
+
+/** Human-readable name for each social platform. */
+export const SOCIAL_LABELS: Record<SocialPlatform, string> = {
+  instagram: "Instagram",
+  tiktok: "TikTok",
+  facebook: "Facebook",
+  x: "X",
+  linktree: "Linktree",
+};
+
 export interface Brand {
   key: BrandKey;
   name: string;
@@ -35,8 +52,17 @@ export interface Brand {
   story: string;
   /** path to the restaurant's own printed menu, served from public/ */
   menuPdf: string;
+  /** Instagram handle (kept for convenience; also present in `socials`) */
   instagram: string;
-  tiktok: string;
+  /** call & WhatsApp line, in local Ghana format for display */
+  phone: string;
+  email: string;
+  /** the brand's Linktree / link hub */
+  linktree: string;
+  /** optional customer-feedback form (lives on the Linktree) */
+  feedbackUrl?: string;
+  /** every social platform the brand is actually on */
+  socials: BrandSocial[];
   /** env var that holds the live WhatsApp number, with a safe fallback */
   whatsappEnv: string;
   whatsappFallback: string;
@@ -54,14 +80,20 @@ export const BRANDS: Record<BrandKey, Brand> = {
     accentSoft: "#E7C46A",
     neighbourhood: "Pig-Farm",
     city: "Pig-Farm, Accra",
-    hours: "Daily · 11:00 – 23:00",
+    hours: "Mon – Sun · 11:00 – 23:00",
     story:
-      "A proud, full-service kitchen in Pig-Farm. Authentic Eʋe cooking under spotlight — with a range wide enough for any table, and Naturia natural drinks to pair.",
+      "A proud, full-service kitchen in Pig-Farm. Traditional Eʋe cuisine alongside Ghanaian, Nigerian and continental dishes — a range wide enough for any table.",
     menuPdf: "/menus/giloz-menu.pdf",
     instagram: "giloz_restaurant",
-    tiktok: "giloz_restaurant",
+    phone: "0256844456",
+    email: "gilozrestaurant@gmail.com",
+    linktree: "https://linktr.ee/giloz.restaurant",
+    socials: [
+      { platform: "instagram", label: "@giloz_restaurant", href: "https://instagram.com/giloz_restaurant" },
+      { platform: "linktree", label: "linktr.ee/giloz.restaurant", href: "https://linktr.ee/giloz.restaurant" },
+    ],
     whatsappEnv: "NEXT_PUBLIC_WHATSAPP_GILOZ",
-    whatsappFallback: "233200000000",
+    whatsappFallback: "233256844456",
   },
   sefofo: {
     key: "sefofo",
@@ -74,14 +106,24 @@ export const BRANDS: Record<BrandKey, Brand> = {
     accentSoft: "#E8A32C",
     neighbourhood: "Dzorwulu",
     city: "Dzorwulu, Accra",
-    hours: "Daily · 11:00 – 22:00",
+    hours: "Mon – Sat · 11:00 – 21:00",
     story:
       "Seƒoƒo means ‘flower’ in Eʋe. A homestyle kitchen in Dzorwulu serving the meals that bring back memories — comfort food styled like a family table.",
     menuPdf: "/menus/sefofo-menu.pdf",
     instagram: "sefofo.rlg",
-    tiktok: "sefofo.rlg",
+    phone: "0554177031",
+    email: "sefofo.rlg@gmail.com",
+    linktree: "https://linktr.ee/sefofo",
+    feedbackUrl: "https://linktr.ee/sefofo",
+    socials: [
+      { platform: "instagram", label: "@sefofo.rlg", href: "https://instagram.com/sefofo.rlg" },
+      { platform: "tiktok", label: "@sefofo.rlg", href: "https://tiktok.com/@sefofo.rlg" },
+      { platform: "facebook", label: "Sefofo on Facebook", href: "https://facebook.com/p/Sefofo-61568651235806/" },
+      { platform: "x", label: "@SefofoRLG", href: "https://x.com/SefofoRLG" },
+      { platform: "linktree", label: "linktr.ee/sefofo", href: "https://linktr.ee/sefofo" },
+    ],
     whatsappEnv: "NEXT_PUBLIC_WHATSAPP_SEFOFO",
-    whatsappFallback: "233200000000",
+    whatsappFallback: "233554177031",
   },
 };
 
@@ -111,4 +153,9 @@ export function whatsappNumber(key: BrandKey): string {
 
 export function whatsappLink(key: BrandKey, message: string): string {
   return `https://wa.me/${whatsappNumber(key)}?text=${encodeURIComponent(message)}`;
+}
+
+/** International `tel:` link (e.g. +233256844456) for the brand's call line. */
+export function telLink(key: BrandKey): string {
+  return `tel:+${whatsappNumber(key)}`;
 }

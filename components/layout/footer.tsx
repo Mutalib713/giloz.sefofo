@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Instagram, MessageCircle } from "lucide-react";
+import { Mail, MessageCircle, Phone } from "lucide-react";
 import { Container } from "./container";
-import { BRANDS, HOUSE, whatsappLink } from "@/lib/brands";
+import { BRANDS, BRAND_KEYS, HOUSE, SOCIAL_LABELS, telLink, whatsappLink } from "@/lib/brands";
 
 interface FooterLink {
   label: string;
@@ -85,30 +85,56 @@ export function Footer() {
           ))}
           <div>
             <h3 className="label text-muted">Follow</h3>
-            <ul className="mt-4 space-y-2.5">
-              <li>
-                <a
-                  href={`https://instagram.com/${BRANDS.giloz.instagram}`}
-                  className="inline-flex items-center gap-2 text-sm text-ink/80 transition-colors hover:text-brand"
-                >
-                  <Instagram className="size-4" /> @{BRANDS.giloz.instagram}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`https://instagram.com/${BRANDS.sefofo.instagram}`}
-                  className="inline-flex items-center gap-2 text-sm text-ink/80 transition-colors hover:text-brand"
-                >
-                  <Instagram className="size-4" /> @{BRANDS.sefofo.instagram}
-                </a>
-              </li>
-            </ul>
+            <div className="mt-4 space-y-4">
+              {BRAND_KEYS.map((k) => (
+                <div key={k}>
+                  <p className="text-sm font-medium text-ink">{BRANDS[k].shortName}</p>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {BRANDS[k].socials.map((s) => (
+                      <a
+                        key={s.platform}
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-full border border-line px-2.5 py-1 text-xs text-ink/80 transition-colors hover:border-brand hover:text-brand"
+                      >
+                        {SOCIAL_LABELS[s.platform]}
+                      </a>
+                    ))}
+                    {BRANDS[k].feedbackUrl && (
+                      <a
+                        href={BRANDS[k].feedbackUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-full border border-line px-2.5 py-1 text-xs text-ink/80 transition-colors hover:border-brand hover:text-brand"
+                      >
+                        Feedback
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
           <div>
-            <h3 className="label text-muted">Visit</h3>
-            <ul className="mt-4 space-y-2.5 text-sm text-muted">
-              <li>Giloz · {BRANDS.giloz.city}</li>
-              <li>Sefofo · {BRANDS.sefofo.city}</li>
+            <h3 className="label text-muted">Visit &amp; contact</h3>
+            <ul className="mt-4 space-y-4 text-sm">
+              {BRAND_KEYS.map((k) => (
+                <li key={k}>
+                  <p className="font-medium text-ink">{BRANDS[k].shortName}</p>
+                  <p className="text-muted">{BRANDS[k].city}</p>
+                  <a href={telLink(k)} className="inline-flex items-center gap-1.5 text-ink/80 transition-colors hover:text-brand">
+                    <Phone className="size-3.5" /> {BRANDS[k].phone}
+                  </a>
+                  <br />
+                  <a
+                    href={`mailto:${BRANDS[k].email}`}
+                    className="inline-flex items-center gap-1.5 break-all text-ink/80 transition-colors hover:text-brand"
+                  >
+                    <Mail className="size-3.5" /> {BRANDS[k].email}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

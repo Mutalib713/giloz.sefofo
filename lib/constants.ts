@@ -10,11 +10,6 @@ export const SITE = {
   locale: "en_GH",
 } as const;
 
-export const SOCIALS = [
-  { label: "Instagram", href: "https://instagram.com/giloz_restaurant" },
-  { label: "TikTok", href: "https://tiktok.com/@sefofo.rlg" },
-] as const;
-
 export const HOW_IT_WORKS = [
   {
     title: "Choose your kitchen",
