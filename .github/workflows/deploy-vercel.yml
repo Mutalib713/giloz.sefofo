@@ -1,0 +1,35 @@
+name: Deploy to Vercel
+
+# Deploys every push to main to Vercel production.
+# Setup (one time): create a token at vercel.com/account/tokens, then add it
+# as the repository secret VERCEL_TOKEN (GitHub → Settings → Secrets and
+# variables → Actions). Until the secret exists this workflow skips politely.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vercel
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Deploy to Vercel (production)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::notice::VERCEL_TOKEN secret is not set — skipping deploy."
+            echo "Add it under Settings → Secrets and variables → Actions to enable auto-deploys."
+            exit 0
+          fi
+          npx vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"

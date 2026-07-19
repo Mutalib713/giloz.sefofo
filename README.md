@@ -80,6 +80,21 @@ every printed combination.
   [`scripts/image-candidates.json`](./scripts/image-candidates.json).
 - **Restaurant entrances:** the "Visit" cards use real storefront photos of each kitchen.
 
+## Deploy
+
+The app is Vercel-ready (`vercel.json` is configured). Two ways to go live:
+
+1. **Vercel Git integration (recommended, ~2 minutes):** at [vercel.com/new](https://vercel.com/new),
+   import `Mutalib713/giloz.sefofo`, accept the detected Next.js defaults, and deploy.
+   Every push to `main` then deploys automatically.
+2. **GitHub Actions:** create a token at [vercel.com/account/tokens](https://vercel.com/account/tokens)
+   and add it as the repository secret `VERCEL_TOKEN` (Settings → Secrets and variables →
+   Actions). The included [`deploy-vercel` workflow](./.github/workflows/deploy-vercel.yml)
+   then deploys every push to `main`; until the secret exists it skips politely.
+
+No environment variables are required to deploy — the app runs fully on typed mock data.
+Add live-service keys later via the Vercel dashboard (see [`.env.example`](./.env.example)).
+
 ## The architecture (read in order)
 
 | #  | Document | What it covers |
