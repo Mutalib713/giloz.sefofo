@@ -89,9 +89,11 @@
   --surface: #ffffff;
   --surface-2: #f3e9d8;
   --fg: #241a14;
-  --muted: #7a6a57;
+  /* WCAG AA: >=5.8:1 on every sefofo surface, incl. surface-2 */
+  --muted: #665741;
   --line: rgba(60, 45, 25, 0.14);
-  --brand: #c4552d;
+  /* WCAG AA as small text on cream (4.9:1) and under on-brand text (5.0:1) */
+  --brand: #b34a24;
   --brand-strong: #e06a3a;
   --on-brand: #fff6ec;
   --secondary: #3e5c3a;
@@ -157,6 +159,11 @@
     backdrop-filter: blur(16px) saturate(1.4);
     -webkit-backdrop-filter: blur(16px) saturate(1.4);
     border: 1px solid var(--line);
+  }
+  /* Light theme needs a denser pane: at 70% the page title reads through
+     the sticky header and collides with the nav. */
+  [data-brand="sefofo"] .glass {
+    background-color: color-mix(in srgb, var(--bg) 90%, transparent);
   }
   .glass-strong {
     background-color: color-mix(in srgb, var(--bg) 82%, transparent);

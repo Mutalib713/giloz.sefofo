@@ -5,7 +5,7 @@ import type { Product } from "@/lib/types";
 
 export function MenuGrid({ products }: { products: Product[] }) {
   return (
-    <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 xl:grid-cols-4">
       {products.map((p, i) => (
         <Reveal key={p.id} delay={Math.min(i, 7) * 0.05}>
           <ProductCard product={p} />
@@ -34,7 +34,7 @@ export function ProductCardSkeleton() {
 
 export function MenuGridSkeleton({ count = 8 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 xl:grid-cols-4">
       {Array.from({ length: count }).map((_, i) => (
         <ProductCardSkeleton key={i} />
       ))}

@@ -14,7 +14,7 @@ import { Container } from "@/components/layout/container";
 import { FoodImage } from "@/components/common/food-image";
 import { OptionPicker } from "@/components/product/option-picker";
 import { ProductCard } from "@/components/menu/product-card";
-import { PriceTag, Rating, Spice, TagBadges } from "@/components/menu/product-meta";
+import { PriceTag, Spice, TagBadges } from "@/components/menu/product-meta";
 import { Reveal } from "@/components/motion";
 import { JsonLd } from "@/components/common/json-ld";
 import { SITE } from "@/lib/constants";
@@ -73,11 +73,6 @@ export default async function ProductPage({
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: product.ratingAvg,
-      reviewCount: product.ratingCount,
-    },
   };
 
   return (
@@ -106,6 +101,7 @@ export default async function ProductPage({
               alt={product.name}
               tone={product.imageTone}
               priority
+              sizes="(max-width: 1024px) 100vw, 50vw"
               className="aspect-square"
             />
             <div className="absolute left-4 top-4 flex flex-col gap-2">
@@ -125,11 +121,15 @@ export default async function ProductPage({
 
         <div>
           <Reveal>
-            <p className="label text-brand">{product.eweName ?? b.name}</p>
+            <p className="label text-brand">
+              {product.eweName &&
+              product.eweName.localeCompare(product.name, undefined, { sensitivity: "base" }) !== 0
+                ? product.eweName
+                : b.name}
+            </p>
             <h1 className="mt-2 font-serif text-4xl tracking-tight sm:text-5xl">{product.name}</h1>
 
             <div className="mt-4 flex flex-wrap items-center gap-4">
-              <Rating value={product.ratingAvg} count={product.ratingCount} />
               <Spice level={product.spiceLevel} />
               <span className="inline-flex items-center gap-1.5 text-sm text-muted">
                 <Clock className="size-4" /> {product.prepMinutes} min

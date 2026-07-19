@@ -16,9 +16,8 @@ export function CategoryRail({ categories, sp }: CategoryRailProps) {
   const items = [{ slug: "all", name: "All dishes" }, ...categories];
 
   return (
-    <div
+    <nav
       className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 py-1 sm:mx-0 sm:px-0"
-      role="tablist"
       aria-label="Menu categories"
     >
       {items.map((c) => {
@@ -31,8 +30,7 @@ export function CategoryRail({ categories, sp }: CategoryRailProps) {
             key={c.slug}
             href={href}
             scroll={false}
-            role="tab"
-            aria-selected={isActive}
+            aria-current={isActive ? "true" : undefined}
             className={cn(
               "shrink-0 rounded-full border px-4 py-2 text-sm transition-colors",
               isActive
@@ -44,6 +42,6 @@ export function CategoryRail({ categories, sp }: CategoryRailProps) {
           </Link>
         );
       })}
-    </div>
+    </nav>
   );
 }

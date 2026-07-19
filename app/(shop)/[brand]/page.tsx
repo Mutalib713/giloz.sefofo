@@ -113,6 +113,7 @@ export default async function BrandHome({ params }: { params: Promise<{ brand: s
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-line">
               <FoodImage
                 src={featured[0]?.image}
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 alt={featured[0]?.name ?? b.name}
                 tone={featured[0]?.imageTone ?? ["#8A5A2B", "#241610"]}
                 className="absolute inset-0"

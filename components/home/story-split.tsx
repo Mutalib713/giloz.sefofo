@@ -12,6 +12,7 @@ export function StorySplit() {
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-line">
               <FoodImage
                 src={BRAND_HERO.giloz}
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 alt="Eʋe cooking from the Volta"
                 tone={["#8A5A2B", "#241610"]}
                 className="absolute inset-0"

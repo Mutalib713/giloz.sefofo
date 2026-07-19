@@ -99,7 +99,7 @@ export function CartSheet() {
                               type="button"
                               onClick={() => removeItem(i.key)}
                               aria-label={`Remove ${i.name}`}
-                              className="text-muted transition-colors hover:text-brand"
+                              className="-m-3 grid size-11 place-items-center text-muted transition-colors hover:text-brand"
                             >
                               <Trash2 className="size-4" />
                             </button>
@@ -114,19 +114,19 @@ export function CartSheet() {
                               <button
                                 type="button"
                                 onClick={() => setQty(i.key, i.quantity - 1)}
-                                className="grid size-8 place-items-center"
+                                className="grid size-11 place-items-center"
                                 aria-label="Decrease quantity"
                               >
-                                <Minus className="size-3.5" />
+                                <Minus className="size-4" />
                               </button>
                               <span className="tnum w-7 text-center text-sm">{i.quantity}</span>
                               <button
                                 type="button"
                                 onClick={() => setQty(i.key, i.quantity + 1)}
-                                className="grid size-8 place-items-center"
+                                className="grid size-11 place-items-center"
                                 aria-label="Increase quantity"
                               >
-                                <Plus className="size-3.5" />
+                                <Plus className="size-4" />
                               </button>
                             </div>
                             <span className="tnum font-semibold">

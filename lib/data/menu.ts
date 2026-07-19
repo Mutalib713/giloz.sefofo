@@ -53,9 +53,10 @@ export async function getMenu(brand: BrandKey, filters: MenuFilters = {}): Promi
       items = [...items].sort((a, b) => b.ratingCount - a.ratingCount);
       break;
     default:
+      // Featured dishes first, then the kitchen's own menu order.
       items = [...items].sort((a, b) => {
         if (a.isFeatured !== b.isFeatured) return a.isFeatured ? -1 : 1;
-        return b.ratingAvg - a.ratingAvg;
+        return 0;
       });
   }
   return items;

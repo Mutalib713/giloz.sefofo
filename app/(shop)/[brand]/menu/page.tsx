@@ -96,7 +96,7 @@ export default async function MenuPage({
           <EmptyState
             icon={UtensilsCrossed}
             title="No dishes match that."
-            description="Try clearing your filters or searching for something else — like jollof, banku or sobolo."
+            description="Try clearing your filters or searching for something else — like jollof, banku or shawarma."
             actionHref={`/${brand}/menu`}
             actionLabel="Clear filters"
           />

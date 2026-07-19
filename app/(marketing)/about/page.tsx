@@ -58,7 +58,7 @@ export default function AboutPage() {
                   data-brand={k}
                   className="overflow-hidden rounded-3xl border border-line bg-paper text-ink"
                 >
-                  <FoodImage src={BRAND_VENUE[k]} alt={`Inside ${b.name}`} tone={["#8A5A2B", "#241610"]} className="aspect-[16/9]" />
+                  <FoodImage src={BRAND_VENUE[k]} alt={`Inside ${b.name}`} tone={["#8A5A2B", "#241610"]} sizes="(max-width: 768px) 100vw, 50vw" className="aspect-[16/9]" />
                   <div className="p-7">
                     <div className="flex items-center gap-3">
                       <BrandLogo brand={k} size={44} className="border border-line" />

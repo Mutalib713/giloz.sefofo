@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Bike, MapPin, MessageCircle, ShoppingBag, Store, Tag } from "lucide-react";
@@ -17,6 +17,16 @@ import { cn } from "@/lib/cn";
 
 const inputCls =
   "w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand";
+const inputErrCls = "border-[#c0442e] focus-visible:ring-[#c0442e]";
+
+/** Ghana mobile numbers: 0XXXXXXXXX or +233XXXXXXXXX (spaces/dashes ignored). */
+function isGhanaPhone(raw: string): boolean {
+  const v = raw.replace(/[\s-]/g, "");
+  return /^(?:\+?233|0)[235]\d{8}$/.test(v);
+}
+
+type FieldKey = "name" | "phone" | "email" | "zone" | "address";
+type FieldErrors = Partial<Record<FieldKey, string>>;
 
 export function CheckoutClient() {
   const router = useRouter();
@@ -37,7 +47,15 @@ export function CheckoutClient() {
   const [couponInput, setCouponInput] = useState("");
   const [coupon, setCoupon] = useState<CouponOk | null>(null);
   const [couponError, setCouponError] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<FieldErrors>({});
+
+  const refs = {
+    name: useRef<HTMLInputElement>(null),
+    phone: useRef<HTMLInputElement>(null),
+    email: useRef<HTMLInputElement>(null),
+    zone: useRef<HTMLSelectElement>(null),
+    address: useRef<HTMLTextAreaElement>(null),
+  };
 
   const zone = getZone(zoneId);
   const deliveryFee = fulfilment === "pickup" ? 0 : coupon?.freeDelivery ? 0 : (zone?.fee ?? 0);
@@ -45,6 +63,9 @@ export function CheckoutClient() {
   const total = Math.max(0, subtotal - discount) + deliveryFee;
   const eta =
     fulfilment === "pickup" ? { min: 20, max: 30 } : { min: zone?.etaMin ?? 25, max: zone?.etaMax ?? 45 };
+
+  const clearError = (key: FieldKey) =>
+    setErrors((e) => (e[key] ? { ...e, [key]: undefined } : e));
 
   const applyCoupon = () => {
     const res = validateCoupon(couponInput, subtotal);
@@ -57,17 +78,35 @@ export function CheckoutClient() {
     }
   };
 
+  /** Validate every field at once; focus + scroll to the first problem. */
+  const validate = (): boolean => {
+    const next: FieldErrors = {};
+    if (!name.trim()) next.name = "Please enter your name.";
+    if (!phone.trim()) next.phone = "Please enter your phone number.";
+    else if (!isGhanaPhone(phone))
+      next.phone = "Enter a valid Ghana number, e.g. 024 123 4567 or +233 24 123 4567.";
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
+      next.email = "That email doesn't look right — check it or leave it empty.";
+    if (fulfilment === "delivery") {
+      if (!zoneId) next.zone = "Choose your delivery area.";
+      if (!address.trim()) next.address = "Add your address so the rider can find you.";
+    }
+    setErrors(next);
+    const first = (["name", "phone", "email", "zone", "address"] as FieldKey[]).find(
+      (k) => next[k],
+    );
+    if (first) {
+      const el = refs[first].current;
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      el?.focus({ preventScroll: true });
+      return false;
+    }
+    return true;
+  };
+
   const placeOrder = (method: "paystack" | "cash" | "whatsapp") => {
     if (!brand) return;
-    if (!name.trim() || !phone.trim()) {
-      setError("Please add your name and phone number.");
-      return;
-    }
-    if (fulfilment === "delivery" && (!zoneId || !address.trim())) {
-      setError("Please choose a delivery zone and enter your address.");
-      return;
-    }
-    setError("");
+    if (!validate()) return;
 
     const order: Order = {
       id: crypto.randomUUID(),
@@ -114,6 +153,7 @@ export function CheckoutClient() {
   }
 
   const b = BRANDS[brand];
+  const hasErrors = Object.values(errors).some(Boolean);
 
   return (
     <div data-brand={brand} className="grid gap-10 lg:grid-cols-[1fr_380px] lg:gap-14">
@@ -151,27 +191,49 @@ export function CheckoutClient() {
           </div>
 
           {fulfilment === "delivery" ? (
-            <div className="mt-4 flex flex-col gap-3">
-              <select
-                aria-label="Delivery zone"
-                value={zoneId}
-                onChange={(e) => setZoneId(e.target.value)}
-                className={inputCls}
+            <div className="mt-4 flex flex-col gap-4">
+              <Field label="Delivery area" htmlFor="co-zone" error={errors.zone} errorId="co-zone-err">
+                <select
+                  id="co-zone"
+                  ref={refs.zone}
+                  value={zoneId}
+                  onChange={(e) => {
+                    setZoneId(e.target.value);
+                    clearError("zone");
+                  }}
+                  aria-invalid={Boolean(errors.zone)}
+                  aria-describedby={errors.zone ? "co-zone-err" : undefined}
+                  className={cn(inputCls, errors.zone && inputErrCls)}
+                >
+                  <option value="">Select your area…</option>
+                  {DELIVERY_ZONES.map((z) => (
+                    <option key={z.id} value={z.id}>
+                      {z.name} — {formatCedis(z.fee)}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field
+                label="Delivery address"
+                htmlFor="co-address"
+                error={errors.address}
+                errorId="co-address-err"
               >
-                <option value="">Select your area…</option>
-                {DELIVERY_ZONES.map((z) => (
-                  <option key={z.id} value={z.id}>
-                    {z.name} — {formatCedis(z.fee)}
-                  </option>
-                ))}
-              </select>
-              <textarea
-                placeholder="Delivery address (street, landmark, directions)"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                rows={2}
-                className={inputCls}
-              />
+                <textarea
+                  id="co-address"
+                  ref={refs.address}
+                  placeholder="Street, landmark, directions…"
+                  value={address}
+                  onChange={(e) => {
+                    setAddress(e.target.value);
+                    clearError("address");
+                  }}
+                  rows={2}
+                  aria-invalid={Boolean(errors.address)}
+                  aria-describedby={errors.address ? "co-address-err" : undefined}
+                  className={cn(inputCls, errors.address && inputErrCls)}
+                />
+              </Field>
             </div>
           ) : (
             <div className="mt-4 flex items-center gap-3 rounded-xl border border-line bg-surface p-4 text-sm">
@@ -184,37 +246,81 @@ export function CheckoutClient() {
         {/* details */}
         <section>
           <h2 className="mb-3 font-serif text-xl">Your details</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <input
-              className={inputCls}
-              placeholder="Full name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              autoComplete="name"
-            />
-            <input
-              className={inputCls}
-              placeholder="Phone / WhatsApp (e.g. 024…)"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              autoComplete="tel"
-              inputMode="tel"
-            />
-            <input
-              className={cn(inputCls, "sm:col-span-2")}
-              placeholder="Email (optional)"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
-              type="email"
-            />
-            <textarea
-              className={cn(inputCls, "sm:col-span-2")}
-              placeholder="Order note (allergies, preferences)…"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              rows={2}
-            />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Full name" htmlFor="co-name" error={errors.name} errorId="co-name-err">
+              <input
+                id="co-name"
+                ref={refs.name}
+                className={cn(inputCls, errors.name && inputErrCls)}
+                placeholder="e.g. Ama Mensah"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  clearError("name");
+                }}
+                autoComplete="name"
+                aria-invalid={Boolean(errors.name)}
+                aria-describedby={errors.name ? "co-name-err" : undefined}
+              />
+            </Field>
+            <Field
+              label="Phone / WhatsApp"
+              htmlFor="co-phone"
+              error={errors.phone}
+              errorId="co-phone-err"
+            >
+              <input
+                id="co-phone"
+                ref={refs.phone}
+                className={cn(inputCls, errors.phone && inputErrCls)}
+                placeholder="e.g. 024 123 4567"
+                value={phone}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                  clearError("phone");
+                }}
+                autoComplete="tel"
+                inputMode="tel"
+                aria-invalid={Boolean(errors.phone)}
+                aria-describedby={errors.phone ? "co-phone-err" : undefined}
+              />
+            </Field>
+            <div className="sm:col-span-2">
+              <Field
+                label="Email (optional)"
+                htmlFor="co-email"
+                error={errors.email}
+                errorId="co-email-err"
+              >
+                <input
+                  id="co-email"
+                  ref={refs.email}
+                  className={cn(inputCls, errors.email && inputErrCls)}
+                  placeholder="For your receipt"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    clearError("email");
+                  }}
+                  autoComplete="email"
+                  type="email"
+                  aria-invalid={Boolean(errors.email)}
+                  aria-describedby={errors.email ? "co-email-err" : undefined}
+                />
+              </Field>
+            </div>
+            <div className="sm:col-span-2">
+              <Field label="Order note (optional)" htmlFor="co-note">
+                <textarea
+                  id="co-note"
+                  className={inputCls}
+                  placeholder="Allergies, preferences…"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  rows={2}
+                />
+              </Field>
+            </div>
           </div>
         </section>
 
@@ -297,6 +403,7 @@ export function CheckoutClient() {
             ) : (
               <div className="flex gap-2">
                 <input
+                  aria-label="Promo code"
                   className={inputCls}
                   placeholder="Promo code (try WELCOME10)"
                   value={couponInput}
@@ -307,7 +414,11 @@ export function CheckoutClient() {
                 </Button>
               </div>
             )}
-            {couponError && <p className="mt-2 text-xs text-[#c0442e]">{couponError}</p>}
+            {couponError && (
+              <p role="alert" className="mt-2 text-xs text-[#c0442e]">
+                {couponError}
+              </p>
+            )}
           </div>
 
           {/* totals */}
@@ -327,7 +438,11 @@ export function CheckoutClient() {
             </p>
           </div>
 
-          {error && <p className="mt-3 text-sm text-[#c0442e]">{error}</p>}
+          {hasErrors && (
+            <p role="alert" className="mt-3 text-sm text-[#c0442e]">
+              Almost — fix the highlighted fields above and try again.
+            </p>
+          )}
 
           <div className="mt-5 flex flex-col gap-3">
             <Button size="lg" onClick={() => placeOrder(payment)}>
@@ -342,6 +457,34 @@ export function CheckoutClient() {
           </div>
         </div>
       </aside>
+    </div>
+  );
+}
+
+function Field({
+  label,
+  htmlFor,
+  error,
+  errorId,
+  children,
+}: {
+  label: string;
+  htmlFor: string;
+  error?: string;
+  errorId?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label htmlFor={htmlFor} className="mb-1.5 block text-sm font-medium text-ink">
+        {label}
+      </label>
+      {children}
+      {error && errorId && (
+        <p id={errorId} role="alert" className="mt-1.5 text-xs text-[#c0442e]">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

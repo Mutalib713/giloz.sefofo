@@ -83,7 +83,7 @@ function BrandBlock({ brand, showName }: { brand: BrandKey; showName: boolean })
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`${b.name} on ${SOCIAL_LABELS[s.platform]}`}
-            className="grid size-9 place-items-center rounded-full border border-line bg-surface text-ink transition-colors hover:border-brand hover:text-brand"
+            className="grid size-11 place-items-center rounded-full border border-line bg-surface text-ink transition-colors hover:border-brand hover:text-brand"
           >
             <SocialIcon platform={s.platform} className="size-[17px]" />
           </a>
