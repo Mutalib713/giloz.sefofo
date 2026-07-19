@@ -1,16 +1,22 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Leaf, MapPin, Smartphone } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { FloatingFood, Magnetic, Reveal, TextReveal } from "@/components/motion";
-import { HeroPlates, HeroPlatesMobile } from "./hero-plates";
+import { HeroShowpiece } from "./hero-showpiece";
+
+const CHIPS = [
+  { icon: Leaf, label: "Fresh & made to order" },
+  { icon: Smartphone, label: "Mobile Money & WhatsApp" },
+  { icon: MapPin, label: "Delivered across Accra" },
+];
 
 export function Hero() {
   return (
     <section data-brand="eve" className="grain relative overflow-hidden bg-paper">
       <div className="mesh absolute inset-0 animate-gradient opacity-70" aria-hidden />
       <FloatingFood />
-      <Container className="relative z-10 flex min-h-[92vh] flex-col justify-center py-20 lg:grid lg:grid-cols-[1fr_minmax(0,540px)] lg:items-center lg:gap-12">
+      <Container className="relative z-10 grid min-h-[92vh] items-center gap-12 py-20 lg:grid-cols-[1fr_minmax(0,520px)]">
         <div>
           <Reveal>
             <p className="label text-brand">The Eʋe Table · Accra, Ghana</p>
@@ -42,14 +48,23 @@ export function Hero() {
               </Button>
             </div>
           </Reveal>
-          {/* Mobile / tablet: the two signature plates below the CTAs */}
-          <Reveal delay={0.5} className="mt-10 lg:hidden">
-            <HeroPlatesMobile className="mx-auto max-w-sm" />
+          <Reveal delay={0.5}>
+            <ul className="mt-8 flex flex-wrap gap-2.5">
+              {CHIPS.map((c) => (
+                <li
+                  key={c.label}
+                  className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-3.5 py-2 text-sm text-muted"
+                >
+                  <c.icon className="size-4 text-brand" /> {c.label}
+                </li>
+              ))}
+            </ul>
           </Reveal>
         </div>
-        {/* Desktop: layered plates fill the (previously empty) right half */}
-        <Reveal delay={0.35} className="hidden lg:block">
-          <HeroPlates className="h-[560px]" />
+
+        {/* The showpiece dish — right of the copy on desktop, below it on mobile */}
+        <Reveal delay={0.35} className="mx-auto w-full max-w-sm lg:max-w-none">
+          <HeroShowpiece />
         </Reveal>
       </Container>
     </section>
