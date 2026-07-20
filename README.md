@@ -44,7 +44,7 @@ Then open <http://localhost:3000>. Key routes to explore:
 | `/giloz` · `/sefofo` | Brand home pages |
 | `/giloz/menu` · `/sefofo/menu` | Living menus (with a "View printed menu (PDF)" link) |
 | `/checkout`, `/wishlist`, `/account` | Ordering flow |
-| `/admin` | Admin dashboard |
+| `/admin` | Admin dashboard (password-protected — see [Admin login](#admin-login)) |
 | `/menus/giloz-menu.pdf` · `/menus/sefofo-menu.pdf` | The restaurants' own printed menus |
 
 ### Scripts
@@ -79,6 +79,23 @@ every printed combination.
   [`lib/mock/images.ts`](./lib/mock/images.ts); candidate sources are recorded in
   [`scripts/image-candidates.json`](./scripts/image-candidates.json).
 - **Restaurant entrances:** the "Visit" cards use real storefront photos of each kitchen.
+
+## Admin login
+
+The `/admin` dashboard (live orders, revenue, the full dish list) is protected by
+a username + password prompt via [`middleware.ts`](./middleware.ts). Visiting
+`/admin` pops the browser's native login dialog.
+
+| | Default |
+|-|---------|
+| Username | `admin` |
+| Password | `admin123` |
+
+Because this repository is **public**, treat the defaults as demo-only. Set a
+strong password in production through the environment variables `ADMIN_USER` and
+`ADMIN_PASSWORD` (Vercel → Project → Settings → Environment Variables, then
+redeploy) so the real credentials never live in committed source. See
+[`.env.example`](./.env.example).
 
 ## Deploy
 
