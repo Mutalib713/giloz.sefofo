@@ -3,13 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, Leaf } from "lucide-react";
 import { BRANDS, isBrandKey } from "@/lib/brands";
-import {
-  getAllProducts,
-  getCategory,
-  getPairings,
-  getProduct,
-  getRelated,
-} from "@/lib/data/menu";
+import { getAllProducts, getCategory, getPairings, getProduct, getRelated } from "@/lib/data/menu";
 import { Container } from "@/components/layout/container";
 import { FoodImage } from "@/components/common/food-image";
 import { OptionPicker } from "@/components/product/option-picker";
@@ -79,8 +73,8 @@ export default async function ProductPage({
     <Container className="py-8 sm:py-12">
       <JsonLd data={jsonLd} />
 
-      <nav className="mb-6 flex items-center gap-2 text-sm text-muted" aria-label="Breadcrumb">
-        <Link href={`/${brand}/menu`} className="inline-flex items-center gap-1.5 hover:text-brand">
+      <nav className="text-muted mb-6 flex items-center gap-2 text-sm" aria-label="Breadcrumb">
+        <Link href={`/${brand}/menu`} className="hover:text-brand inline-flex items-center gap-1.5">
           <ArrowLeft className="size-4" /> {b.name} menu
         </Link>
         {category && (
@@ -95,7 +89,7 @@ export default async function ProductPage({
 
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
         <Reveal className="lg:sticky lg:top-24 lg:self-start">
-          <div className="relative overflow-hidden rounded-3xl border border-line">
+          <div className="border-line relative overflow-hidden rounded-3xl border">
             <FoodImage
               src={product.image}
               alt={product.name}
@@ -104,16 +98,16 @@ export default async function ProductPage({
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="aspect-square"
             />
-            <div className="absolute left-4 top-4 flex flex-col gap-2">
+            <div className="absolute top-4 left-4 flex flex-col gap-2">
               {product.tags.includes("chefs-pick") && (
-                <span className="w-fit rounded-full bg-black/45 px-3 py-1 text-xs font-medium uppercase tracking-wider text-white backdrop-blur">
+                <span className="bg-brand text-on-brand w-fit rounded-full px-3 py-1 text-xs font-medium tracking-wider uppercase shadow-sm">
                   Chef's pick
                 </span>
               )}
             </div>
           </div>
           {!product.image && (
-            <p className="mt-3 text-center text-xs text-muted">
+            <p className="text-muted mt-3 text-center text-xs">
               Photography coming soon — this is a placeholder rendered from the dish's colour story.
             </p>
           )}
@@ -131,17 +125,17 @@ export default async function ProductPage({
 
             <div className="mt-4 flex flex-wrap items-center gap-4">
               <Spice level={product.spiceLevel} />
-              <span className="inline-flex items-center gap-1.5 text-sm text-muted">
+              <span className="text-muted inline-flex items-center gap-1.5 text-sm">
                 <Clock className="size-4" /> {product.prepMinutes} min
               </span>
               {product.tags.includes("vegan") && (
-                <span className="inline-flex items-center gap-1.5 text-sm text-secondary">
+                <span className="text-secondary inline-flex items-center gap-1.5 text-sm">
                   <Leaf className="size-4" /> Vegan
                 </span>
               )}
             </div>
 
-            <p className="mt-5 max-w-prose text-lg text-muted">{product.description}</p>
+            <p className="text-muted mt-5 max-w-prose text-lg">{product.description}</p>
 
             <div className="mt-5">
               <TagBadges tags={product.tags} />
@@ -152,7 +146,7 @@ export default async function ProductPage({
               <PriceTag pesewas={product.basePrice} className="font-serif text-3xl" />
             </div>
 
-            <hr className="my-7 border-line" />
+            <hr className="border-line my-7" />
 
             <OptionPicker product={product} />
           </Reveal>
